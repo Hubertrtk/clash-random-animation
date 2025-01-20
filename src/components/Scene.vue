@@ -1,118 +1,68 @@
 <template>
   <div class="scene">
-    <div class="cube animated-box" @animationstart="animationStart">
-      <div class="face face1">{{ displayFace3 }}</div>
-      <div class="face face2">{{ displayFace4 }}</div>
-      <div class="face face3">{{ displayFace5 }}</div>
-      <div class="face face4">{{ displayFace2 }}</div>
-      <div class="face face5">{{ displayFace1 }}</div>
-      <div class="face face6">{{ displayFace6 }}</div>
+    <div class="cube" :style="{ transform: computedRoate }">
+      <div
+        class="face"
+        :class="value.face"
+        v-for="value in generateBlockStyles().faces"
+        :key="value.face"
+        :style="{ transform: value.transformStyles }"
+      >
+        {{ facesDisplayData[value.face]?.data }}
+      </div>
     </div>
   </div>
 </template>
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import mockData from './../mockData'
-const props = defineProps(['data', 'animationDuration'])
-const faces = reactive({
-  face1: 1,
-  face2: 2,
-  face3: 3,
-  face4: 4,
-  face5: 5,
-  face6: 6,
+import { generateBlockStyles } from '../helpers/keyFrameGenerator'
+
+const facesDisplayData = reactive({})
+const round = ref(0)
+
+const props = defineProps({
+  rotate: Number,
 })
-const animationName = ref('animation-start')
-
-const facesTimeouts = {
-  face1: [833.3333333333334, 2500, 3750],
-  face2: [1250, 2500, 3750],
-  face3: [1666.6666666666667, 2500, 3750],
-  face4: [2083.3333333333335, 2500, 3750],
-  face5: [2500, 2500, 3750],
-  face6: [2916.6666666666665, 2500, 3750],
-}
-
-const exRef = ref(0)
-
-const CONSTANTS = {
-  JUMP: 2000,
-  MAX_DURATION: 10000,
-}
-
-const startAnimation = () => {
-  // Tworzenie dynamicznej definicji keyframes
-  const style = document.createElement('style')
-  style.innerHTML = `
-@keyframes rotate { 0% {
-    transform: rotateX(0deg);
-    }50% {
-    transform: rotateX(720deg);
-    }100% {
-    transform: rotateX(1080deg);
-    }}
-
-        .animated-box {
-          animation: rotate 10s linear;
-        }
-      `
-  document.head.appendChild(style)
-}
-
-const runTimeout = (array, face, currentIndex = 0) => {
-  console.log(currentIndex)
-  if (currentIndex == array.length) {
-    return
-  }
-  setTimeout(() => {
-    exRef.value++
-    console.log('change ' + face)
-    currentIndex += 1
-    faces[face] += 6
-    runTimeout(array, face, currentIndex)
-  }, array[currentIndex])
-}
 
 onMounted(() => {
-  console.log('mounted')
-  startAnimation()
-  for (const [key, value] of Object.entries(facesTimeouts)) {
-    runTimeout(value, key)
+  let i = 1
+  for (const [face] of Object.entries(generateBlockStyles().faces)) {
+    facesDisplayData[face] = { data: i++, lastUpdateRound: null }
   }
+  console.log(facesDisplayData)
 })
 
-const animationStart = () => {
-  let i = 0
-  // console.log(i)
+watch(
+  () => props.rotate,
+  (value) => {
+    const nextRound = -360 * (round.value + 1)
+    if (value <= nextRound) {
+      round.value++
+    }
+    // console.log('nextRound')
+    // console.log(nextRound)
+    // console.log('round')
+    // console.log(round.value)
+    // console.log('value')
+    // console.log(value)
+    for (const [, faceData] of Object.entries(generateBlockStyles().faces)) {
+      checkIfUpdate(faceData, value)
+    }
+  },
+)
 
-  // setInterval(() => {
-  //   console.log(i)
-  //   i++
-  // }, 1000)
+const checkIfUpdate = (faceData, newAngel) => {
+  if (
+    faceData.minUpdateAngel + (-360 * round.value || 1 + 1) >= newAngel &&
+    facesDisplayData[faceData.face].lastUpdateRound != round.value
+  ) {
+    facesDisplayData[faceData.face].lastUpdateRound = round.value
+    console.log('can update', faceData.face)
+  }
 }
 
-const displayFace1 = computed(() => {
-  return mockData[faces.face1]
-})
-
-const displayFace2 = computed(() => {
-  return mockData[faces.face2]
-})
-
-const displayFace3 = computed(() => {
-  return mockData[faces.face3]
-})
-
-const displayFace4 = computed(() => {
-  return mockData[faces.face4]
-})
-
-const displayFace5 = computed(() => {
-  return mockData[faces.face5]
-})
-
-const displayFace6 = computed(() => {
-  return mockData[faces.face6]
+const computedRoate = computed(() => {
+  return `rotateX(${props.rotate}deg)`
 })
 </script>
 <style scoped>
@@ -121,65 +71,35 @@ const displayFace6 = computed(() => {
   height: 200px;
   position: relative;
   perspective: 800px;
+  border: 2px solid orange;
 }
 
 .cube {
-  width: 100%;
-  height: 100%;
   position: absolute;
   transform-style: preserve-3d;
-  /* animation: rotate 5000ms 1 linear; */
-  /* animation-duration: 10s; */
-  /* animation-timing-function: cubic-bezier(0.1, 0, 0.67, 1); */
-  /* animation-timing-function: linear; */
-  /* animation-name: rotate; */
+  transition: 1000ms;
+  border: 2px solid red;
+  width: 100%;
+  height: 100%;
 }
 
 .face {
   position: absolute;
-  width: 400px;
-  height: 231px;
+  /* width: 400px;
+   */
+  height: 60px;
+  left: 0;
+  right: 0;
+  bottom: calc(50% - 60px / 2);
+
   background: rgba(255, 255, 255, 0.8);
-  border-top: 1px solid rgb(49, 104, 221);
+  /* border-top: 1px solid rgb(49, 104, 221); */
+  border: 1px solid red;
   display: flex;
   justify-content: center;
   align-items: center;
-  backface-visibility: hidden;
+  /* backface-visibility: hidden; */
   /* Ukrycie tylnej strony */
   letter-spacing: 10px;
 }
-
-.face1 {
-  transform: rotateX(300deg) translateZ(200px);
-}
-.face2 {
-  transform: rotateX(240deg) translateZ(200px);
-}
-.face3 {
-  transform: rotateX(180deg) translateZ(200px);
-}
-.face4 {
-  transform: rotateX(0deg) translateZ(200px);
-}
-.face5 {
-  transform: rotateX(60deg) translateZ(200px);
-}
-.face6 {
-  transform: rotateX(120deg) translateZ(200px);
-}
-
-/* @keyframes rotate {
-  0% {
-    transform: rotateX(0deg);
-  }
-  20% {
-    transform: rotateX(360deg);
-  }
-  50% {
-    transform: rotateX(720deg);
-  }
-  100% {
-    transform: rotateX(1080deg);
-  }
-} */
 </style>

@@ -2,20 +2,17 @@
   <!-- // stworzyc klasy czasu animacji dla kazdej ms sass, klasy beda dynamicznie przyznawane. po sparametryzowaniu funkcja js renderuje ciag liczb gdzie kazda odpowiada danej klasie -->
   <!-- pomysl 2 stworzyc kilka instajncji cube z rronym czasem  -->
   <div class="tools-container">
-    <button @click="handleClickButton">CLICK</button>
-    <button @click="updateAnimationDuration">UDPOATE</button>
+    <button @click="() => updateAnimationDuration(45)">+</button>
+    <button @click="() => updateAnimationDuration(-45)">-</button>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+// import { ref } from 'vue'
 
-const emit = defineEmits(['changeData', 'updateAnimationDuration'])
-const handleClickButton = () => {
-  emit('changeData', 'hello')
-}
+const emit = defineEmits(['rotate'])
 
-const updateAnimationDuration = () => {
-  emit('updateAnimationDuration')
+const updateAnimationDuration = (value) => {
+  emit('rotate', value)
 }
 </script>
 <style scoped>

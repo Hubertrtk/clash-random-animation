@@ -24,7 +24,7 @@ const generator = () => {
   console.log(keyframeTemplate)
 }
 
-generator()
+// generator()
 
 let faces = {
   face1: [],
@@ -75,6 +75,26 @@ const facesTimeoutGenerator = () => {
   console.log(faces)
 }
 
-facesTimeoutGenerator()
+// facesTimeoutGenerator()
 
 /// uciac ostatni element sciany 6
+
+const ILOSC_SCIAN_FIGURY = 4
+
+export const generateBlockStyles = () => {
+  let faces = {}
+  let SINGLE_ANGEL = 360 / ILOSC_SCIAN_FIGURY
+  for (let i = 1; i <= ILOSC_SCIAN_FIGURY; i++) {
+    faces[`face${i}`] = { rotateX: SINGLE_ANGEL * (i - 1), minUpdateAngel: -1 * SINGLE_ANGEL * i }
+  }
+  for (const [face, value] of Object.entries(faces)) {
+    value.face = face
+    value.transformStyles = `rotateX(${value.rotateX}deg) translateZ(200px)`
+  }
+  let template = ''
+  for (const [, value] of Object.entries(faces)) {
+    template += value.cssTemplate
+  }
+  console.log(faces)
+  return { template, faces }
+}

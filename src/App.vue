@@ -3,9 +3,9 @@
   <!-- pomysl 2 stworzyc kilka instajncji cube z rronym czasem  -->
   <Mask />
   <div class="scene-container">
-    <Scene :data="dataArray" :animation-duration="animationDuration" />
+    <Scene :rotate="rotateValue" />
   </div>
-  <Tools @change-data="handleEmit" @updateAnimationDuration="updateAnimationDuration" />
+  <Tools @rotate="updateAnimationDuration" />
 </template>
 <script setup>
 import { reactive, ref } from 'vue'
@@ -13,15 +13,10 @@ import Scene from './components/Scene.vue'
 import Tools from './components/Tools.vue'
 import Mask from './components/Mask.vue'
 
-const dataArray = reactive([1, 2, 3, 4, 5, 6])
-const animationDuration = ref(1)
+const rotateValue = ref(0)
 
-const handleEmit = (e) => {
-  dataArray[0]++
-}
-
-const updateAnimationDuration = () => {
-  animationDuration.value++
+const updateAnimationDuration = (value) => {
+  rotateValue.value += value
 }
 </script>
 <style scoped>
