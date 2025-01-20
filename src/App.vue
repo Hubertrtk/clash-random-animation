@@ -1,6 +1,7 @@
 <template>
   <!-- // stworzyc klasy czasu animacji dla kazdej ms sass, klasy beda dynamicznie przyznawane. po sparametryzowaniu funkcja js renderuje ciag liczb gdzie kazda odpowiada danej klasie -->
   <!-- pomysl 2 stworzyc kilka instajncji cube z rronym czasem  -->
+  <Mask />
   <div class="scene-container">
     <Scene :data="dataArray" :animation-duration="animationDuration" />
   </div>
@@ -10,6 +11,7 @@
 import { reactive, ref } from 'vue'
 import Scene from './components/Scene.vue'
 import Tools from './components/Tools.vue'
+import Mask from './components/Mask.vue'
 
 const dataArray = reactive([1, 2, 3, 4, 5, 6])
 const animationDuration = ref(1)

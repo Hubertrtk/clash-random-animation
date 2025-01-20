@@ -1,8 +1,6 @@
-const TOTAL_TIME = 10 // czas całej animacji w sekundach
-
 const FRAMES = [
-  { frame: 2000, rotate: 1 }, // do 1000ms wykonaj 5 obrotow- (hardcoded dla 10 sekund animacji !!!)
-  { frame: 6000, rotate: 1 },
+  { frame: 3000, rotate: 2 }, // do 1000ms wykonaj 5 obrotow- (hardcoded dla 10 sekund animacji !!!)
+  { frame: 5000, rotate: 1 },
   { frame: 10000, rotate: 1 },
 ]
 
@@ -61,17 +59,22 @@ const facesTimeoutGenerator = () => {
     faces.face4.push(...arr)
     faces.face5.push(...arr)
     faces.face6.push(...arr)
-    ;[faces.face1, faces.face2, faces.face3, faces.face4, faces.face5, faces.face6].forEach(
-      (el, index) => {
-        if (index == 0) {
-          return
-        }
-        el[0] = oneStepTime * (index + 1)
-      },
-    )
+    if (indexFrame == 0) {
+      console.log('fullRotateTime')
+      console.log(fullRotateTime)
+      faces.face1[0] = oneStepTime * 2
+      faces.face2[0] = oneStepTime * 3
+      faces.face3[0] = oneStepTime * 4
+      faces.face4[0] = fullRotateTime - oneStepTime
+      faces.face5[0] = fullRotateTime
+      faces.face6[0] = fullRotateTime + oneStepTime
+    }
     prevjump = oneStepTime * 3
   })
+  // faces.face6[0]
   console.log(faces)
 }
 
 facesTimeoutGenerator()
+
+/// uciac ostatni element sciany 6

@@ -1,12 +1,12 @@
 <template>
   <div class="scene">
     <div class="cube animated-box" @animationstart="animationStart">
-      <div class="face face1">{{ faces.face2 }}</div>
-      <div class="face face2">{{ faces.face3 }}</div>
-      <div class="face face3">{{ faces.face4 }}</div>
-      <div class="face face4">{{ faces.face1 }}</div>
-      <div class="face face5">{{ faces.face6 }}</div>
-      <div class="face face6">{{ faces.face5 }}</div>
+      <div class="face face1">{{ displayFace3 }}</div>
+      <div class="face face2">{{ displayFace4 }}</div>
+      <div class="face face3">{{ displayFace5 }}</div>
+      <div class="face face4">{{ displayFace2 }}</div>
+      <div class="face face5">{{ displayFace1 }}</div>
+      <div class="face face6">{{ displayFace6 }}</div>
     </div>
   </div>
 </template>
@@ -25,12 +25,12 @@ const faces = reactive({
 const animationName = ref('animation-start')
 
 const facesTimeouts = {
-  face1: [1000, 3000, 4000],
-  face2: [1333.3333333333333, 3000, 4000],
-  face3: [2000, 3000, 4000],
-  face4: [2666.6666666666665, 3000, 4000],
-  face5: [3333.333333333333, 3000, 4000],
-  face6: [4000, 3000, 4000],
+  face1: [833.3333333333334, 2500, 3750],
+  face2: [1250, 2500, 3750],
+  face3: [1666.6666666666667, 2500, 3750],
+  face4: [2083.3333333333335, 2500, 3750],
+  face5: [2500, 2500, 3750],
+  face6: [2916.6666666666665, 2500, 3750],
 }
 
 const exRef = ref(0)
@@ -46,9 +46,7 @@ const startAnimation = () => {
   style.innerHTML = `
 @keyframes rotate { 0% {
     transform: rotateX(0deg);
-    }20% {
-    transform: rotateX(360deg);
-    }60% {
+    }50% {
     transform: rotateX(720deg);
     }100% {
     transform: rotateX(1080deg);
@@ -94,27 +92,27 @@ const animationStart = () => {
 }
 
 const displayFace1 = computed(() => {
-  return mockData[faces[0]]
+  return mockData[faces.face1]
 })
 
 const displayFace2 = computed(() => {
-  return mockData[faces[1]]
+  return mockData[faces.face2]
 })
 
 const displayFace3 = computed(() => {
-  return mockData[faces[2]]
+  return mockData[faces.face3]
 })
 
 const displayFace4 = computed(() => {
-  return mockData[faces[3]]
+  return mockData[faces.face4]
 })
 
 const displayFace5 = computed(() => {
-  return mockData[faces[4]]
+  return mockData[faces.face5]
 })
 
 const displayFace6 = computed(() => {
-  return mockData[faces[5]]
+  return mockData[faces.face6]
 })
 </script>
 <style scoped>
@@ -142,12 +140,13 @@ const displayFace6 = computed(() => {
   width: 400px;
   height: 231px;
   background: rgba(255, 255, 255, 0.8);
-  border: 2px solid #ccc;
+  border-top: 1px solid rgb(49, 104, 221);
   display: flex;
   justify-content: center;
   align-items: center;
   backface-visibility: hidden;
   /* Ukrycie tylnej strony */
+  letter-spacing: 10px;
 }
 
 .face1 {
