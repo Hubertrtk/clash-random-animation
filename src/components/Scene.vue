@@ -1,34 +1,96 @@
 <template>
   <div class="scene">
-    <div
-      :key="animationRound"
-      class="cube"
-      @animationend="onAnimationEnd"
-      :style="{
-        animationDuration: `${animationDurationTime}ms`,
-      }"
-      :class="canimationName"
-    >
-      <div class="face face1">{{ displayFace3 }}</div>
-      <div class="face face2">{{ displayFace4 }}</div>
-      <div class="face face3">{{ displayFace5 }}</div>
-      <div class="face face4">{{ displayFace2 }}</div>
-      <div class="face face5">{{ displayFace1 }}</div>
-      <div class="face face6">{{ displayFace6 }}</div>
+    <div class="cube animated-box" @animationstart="animationStart">
+      <div class="face face1">{{ faces.face2 }}</div>
+      <div class="face face2">{{ faces.face3 }}</div>
+      <div class="face face3">{{ faces.face4 }}</div>
+      <div class="face face4">{{ faces.face1 }}</div>
+      <div class="face face5">{{ faces.face6 }}</div>
+      <div class="face face6">{{ faces.face5 }}</div>
     </div>
   </div>
 </template>
 <script setup>
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import mockData from './../mockData'
 const props = defineProps(['data', 'animationDuration'])
-const animationRound = ref(1000)
-const faces = reactive([1, 2, 3, 4, 5, 6])
+const faces = reactive({
+  face1: 1,
+  face2: 2,
+  face3: 3,
+  face4: 4,
+  face5: 5,
+  face6: 6,
+})
 const animationName = ref('animation-start')
+
+const facesTimeouts = {
+  face1: [1000, 3000, 4000],
+  face2: [1333.3333333333333, 3000, 4000],
+  face3: [2000, 3000, 4000],
+  face4: [2666.6666666666665, 3000, 4000],
+  face5: [3333.333333333333, 3000, 4000],
+  face6: [4000, 3000, 4000],
+}
+
+const exRef = ref(0)
 
 const CONSTANTS = {
   JUMP: 2000,
   MAX_DURATION: 10000,
+}
+
+const startAnimation = () => {
+  // Tworzenie dynamicznej definicji keyframes
+  const style = document.createElement('style')
+  style.innerHTML = `
+@keyframes rotate { 0% {
+    transform: rotateX(0deg);
+    }20% {
+    transform: rotateX(360deg);
+    }60% {
+    transform: rotateX(720deg);
+    }100% {
+    transform: rotateX(1080deg);
+    }}
+
+        .animated-box {
+          animation: rotate 10s linear;
+        }
+      `
+  document.head.appendChild(style)
+}
+
+const runTimeout = (array, face, currentIndex = 0) => {
+  console.log(currentIndex)
+  if (currentIndex == array.length) {
+    return
+  }
+  setTimeout(() => {
+    exRef.value++
+    console.log('change ' + face)
+    currentIndex += 1
+    faces[face] += 6
+    runTimeout(array, face, currentIndex)
+  }, array[currentIndex])
+}
+
+onMounted(() => {
+  console.log('mounted')
+  startAnimation()
+  for (const [key, value] of Object.entries(facesTimeouts)) {
+    runTimeout(value, key)
+  }
+})
+
+const animationStart = () => {
+  let i = 0
+  // console.log(i)
+
+  // setInterval(() => {
+  //   console.log(i)
+  //   i++
+  // }, 1000)
 }
 
 const displayFace1 = computed(() => {
@@ -54,64 +116,6 @@ const displayFace5 = computed(() => {
 const displayFace6 = computed(() => {
   return mockData[faces[5]]
 })
-
-const onAnimationEnd = () => {
-  console.log(animationRound.value)
-  if (animationRound.value < CONSTANTS.MAX_DURATION) {
-    animationRound.value = animationRound.value + CONSTANTS.JUMP
-    activateTextChange()
-    console.log('new keys')
-    // gdy jest ostatni obrot
-    if (animationRound.value >= CONSTANTS.MAX_DURATION) {
-      animationName.value = 'animation-end'
-      console.log('zmianla')
-    }
-  }
-}
-
-const activateTextChange = () => {
-  setTimeout(() => {
-    faces[0] += 6
-  }, animationRound.value / 6)
-  setTimeout(
-    () => {
-      faces[1] += 6
-    },
-    (animationRound.value / 6) * 2,
-  )
-  setTimeout(
-    () => {
-      faces[2] += 6
-    },
-    (animationRound.value / 6) * 3,
-  )
-  setTimeout(
-    () => {
-      faces[3] += 6
-    },
-    (animationRound.value / 6) * 4,
-  )
-  setTimeout(
-    () => {
-      faces[4] += 6
-    },
-    (animationRound.value / 6) * 5,
-  )
-  setTimeout(
-    () => {
-      faces[5] += 6
-    },
-    (animationRound.value / 6) * 6,
-  )
-}
-
-const canimationName = computed(() => {
-  return animationName.value
-})
-
-const animationDurationTime = computed(() => {
-  return animationRound.value
-})
 </script>
 <style scoped>
 .scene {
@@ -127,17 +131,10 @@ const animationDurationTime = computed(() => {
   position: absolute;
   transform-style: preserve-3d;
   /* animation: rotate 5000ms 1 linear; */
-  animation-duration: 10s;
+  /* animation-duration: 10s; */
   /* animation-timing-function: cubic-bezier(0.1, 0, 0.67, 1); */
-  animation-timing-function: linear;
-}
-
-.animation-start {
-  animation-name: rotate;
-}
-
-.animation-end {
-  animation-name: rotateLast;
+  /* animation-timing-function: linear; */
+  /* animation-name: rotate; */
 }
 
 .face {
@@ -172,24 +169,18 @@ const animationDurationTime = computed(() => {
   transform: rotateX(120deg) translateZ(200px);
 }
 
-@keyframes rotate {
+/* @keyframes rotate {
   0% {
     transform: rotateX(0deg);
   }
-  100% {
+  20% {
     transform: rotateX(360deg);
   }
-}
-
-@keyframes rotateLast {
-  0% {
-    transform: rotateX(0deg);
-  }
-  90% {
-    transform: rotateX(380deg);
+  50% {
+    transform: rotateX(720deg);
   }
   100% {
-    transform: rotateX(360deg);
+    transform: rotateX(1080deg);
   }
-}
+} */
 </style>
