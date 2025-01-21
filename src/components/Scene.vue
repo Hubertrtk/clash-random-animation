@@ -19,6 +19,7 @@ import { generateBlockStyles } from '../helpers/keyFrameGenerator'
 
 const facesDisplayData = reactive({})
 const round = ref(0)
+const click = ref(0)
 
 const props = defineProps({
   rotate: Number,
@@ -26,40 +27,31 @@ const props = defineProps({
 
 onMounted(() => {
   let i = 1
-  for (const [face] of Object.entries(generateBlockStyles().faces)) {
-    facesDisplayData[face] = { data: i++, lastUpdateRound: null }
+  for (const [face, value] of Object.entries(generateBlockStyles().faces)) {
+    console.log(value)
+    facesDisplayData[face] = { data: i++, updateOnClick: value.updateOnClick }
   }
-  console.log(facesDisplayData)
 })
 
 watch(
   () => props.rotate,
   (value) => {
-    const nextRound = -360 * (round.value + 1)
-    if (value <= nextRound) {
+    click.value++
+    if (click.value % generateBlockStyles().wallAmmount === 0) {
+      console.log('zwiekszam round')
       round.value++
     }
-    // console.log('nextRound')
-    // console.log(nextRound)
-    // console.log('round')
-    // console.log(round.value)
-    // console.log('value')
-    // console.log(value)
-    for (const [, faceData] of Object.entries(generateBlockStyles().faces)) {
-      checkIfUpdate(faceData, value)
+    console.log(round.value)
+    for (const [face, value] of Object.entries(facesDisplayData)) {
+      if (value.updateOnClick + generateBlockStyles().wallAmmount * round.value == click.value) {
+        console.log('update' + face)
+        value.data += generateBlockStyles().wallAmmount
+      }
     }
   },
 )
 
-const checkIfUpdate = (faceData, newAngel) => {
-  if (
-    faceData.minUpdateAngel + (-360 * round.value || 1 + 1) >= newAngel &&
-    facesDisplayData[faceData.face].lastUpdateRound != round.value
-  ) {
-    facesDisplayData[faceData.face].lastUpdateRound = round.value
-    console.log('can update', faceData.face)
-  }
-}
+const checkIfUpdate = (faceData, relativeRotate) => {}
 
 const computedRoate = computed(() => {
   return `rotateX(${props.rotate}deg)`
