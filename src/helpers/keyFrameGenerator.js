@@ -79,7 +79,7 @@ const facesTimeoutGenerator = () => {
 
 /// uciac ostatni element sciany 6
 
-const ILOSC_SCIAN_FIGURY = 12
+const ILOSC_SCIAN_FIGURY = 14
 
 export const generateBlockStyles = () => {
   let faces = {}
@@ -102,3 +102,45 @@ export const generateBlockStyles = () => {
   }
   return { template, faces, wallAmmount: ILOSC_SCIAN_FIGURY }
 }
+
+const TIMELINE = {
+  [5000]: 1, // ile dodatkowych obrotow w tym time (w obszarze czasu wod czesniejszego time do tego)
+  [10000]: 1,
+}
+// expected: [500 500 500 500]
+// obliczamy tak jakby sciana juz wykonala pierwszy update (jhest z tylu)
+export const generateTimeOuts = () => {
+  let face1 = []
+  let prevTime = 0
+  let prevDistance = 0
+  for (const [time, distance] of Object.entries(TIMELINE)) {
+    if (distance > 1) {
+      const speedPerOneRotate = (time - prevTime) / distance
+      let arr = Array.from({ length: distance })
+      arr.forEach((el, i) => {
+        arr[i] = speedPerOneRotate
+      })
+      face1.push(...arr)
+    } else {
+      const updateTime = time - prevTime
+      face1.push(updateTime)
+    }
+    prevTime = time
+  }
+  console.log(face1)
+
+  const FIRST_DELAY = face1[0]
+  // obliczanie opznienia przyt pierwszym update
+  const onePartTime = FIRST_DELAY / ILOSC_SCIAN_FIGURY
+  let intervals = Array.from({ length: ILOSC_SCIAN_FIGURY })
+  intervals.forEach((el, index) => {
+    intervals[index] = [...face1]
+    intervals[index][0] -= onePartTime * index - onePartTime * 2
+  })
+  console.log('intervals')
+  console.log(intervals)
+  //usunac oistatni indeks ostatniego
+  return intervals.reverse()
+}
+
+generateTimeOuts()

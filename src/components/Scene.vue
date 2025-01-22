@@ -1,6 +1,6 @@
 <template>
   <div class="scene">
-    <div class="cube" :style="{ transform: computedRoate }">
+    <div class="cube animated-box">
       <div
         class="face"
         :class="value.face"
@@ -15,11 +15,9 @@
 </template>
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { generateBlockStyles } from '../helpers/keyFrameGenerator'
+import { generateBlockStyles, generateTimeOuts } from '../helpers/keyFrameGenerator'
 
 const facesDisplayData = reactive({})
-const round = ref(0)
-const click = ref(0)
 
 const props = defineProps({
   rotate: Number,
@@ -28,34 +26,43 @@ const props = defineProps({
 onMounted(() => {
   let i = 1
   for (const [face, value] of Object.entries(generateBlockStyles().faces)) {
-    console.log(value)
     facesDisplayData[face] = { data: i++, updateOnClick: value.updateOnClick }
+    console.log('i')
+    console.log(i)
+    runTimeout(generateTimeOuts()[i - 2], facesDisplayData[face])
   }
+  console.log('facesDisplayData')
+  console.log(facesDisplayData)
+  startAnimation()
 })
 
-watch(
-  () => props.rotate,
-  (value) => {
-    click.value++
-    if (click.value % generateBlockStyles().wallAmmount === 0) {
-      console.log('zwiekszam round')
-      round.value++
-    }
-    console.log(round.value)
-    for (const [face, value] of Object.entries(facesDisplayData)) {
-      if (value.updateOnClick + generateBlockStyles().wallAmmount * round.value == click.value) {
-        console.log('update' + face)
-        value.data += generateBlockStyles().wallAmmount
-      }
-    }
-  },
-)
+const runTimeout = (array, face, currentIndex = 0) => {
+  if (currentIndex == array.length) {
+    return
+  }
+  setTimeout(() => {
+    currentIndex += 1
+    face.data += generateBlockStyles().wallAmmount
+    runTimeout(array, face, currentIndex)
+  }, array[currentIndex])
+}
 
-const checkIfUpdate = (faceData, relativeRotate) => {}
+const startAnimation = () => {
+  // Tworzenie dynamicznej definicji keyframes
+  const style = document.createElement('style')
+  style.innerHTML = `
+        @keyframes rotate { 0% {
+            transform: rotateX(0deg);
+            } 100% {
+            transform: rotateX(-720deg);
+            }}
 
-const computedRoate = computed(() => {
-  return `rotateX(${props.rotate}deg)`
-})
+        .animated-box {
+          animation: rotate 10s linear;
+        }
+      `
+  document.head.appendChild(style)
+}
 </script>
 <style scoped>
 .scene {
@@ -69,7 +76,6 @@ const computedRoate = computed(() => {
 .cube {
   position: absolute;
   transform-style: preserve-3d;
-  transition: 1000ms;
   border: 2px solid red;
   width: 100%;
   height: 100%;
