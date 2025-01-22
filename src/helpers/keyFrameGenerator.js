@@ -6,24 +6,6 @@ const FRAMES = [
 
 const ROTATE = 360
 
-const generator = () => {
-  let keyframeTemplate = '@keyframes rotate { '
-  keyframeTemplate += `0% {
-    transform: rotateX(0deg);
-    }`
-  let currentRotates = 0
-  FRAMES.forEach((el) => {
-    const degValue = ROTATE * (el.rotate + currentRotates)
-    currentRotates += el.rotate
-    const string = `${el.frame / 100}% {
-    transform: rotateX(${degValue}deg);
-    }`
-    keyframeTemplate += string
-  })
-  keyframeTemplate += '}'
-  console.log(keyframeTemplate)
-}
-
 // generator()
 
 let faces = {
@@ -79,7 +61,7 @@ const facesTimeoutGenerator = () => {
 
 /// uciac ostatni element sciany 6
 
-const ILOSC_SCIAN_FIGURY = 14
+const ILOSC_SCIAN_FIGURY = 6
 
 export const generateBlockStyles = () => {
   let faces = {}
@@ -104,7 +86,6 @@ export const generateBlockStyles = () => {
 }
 
 const TIMELINE = {
-  [5000]: 1, // ile dodatkowych obrotow w tym time (w obszarze czasu wod czesniejszego time do tego)
   [10000]: 1,
 }
 // expected: [500 500 500 500]
@@ -137,10 +118,45 @@ export const generateTimeOuts = () => {
     intervals[index] = [...face1]
     intervals[index][0] -= onePartTime * index - onePartTime * 2
   })
+  console.log('====================================')
   console.log('intervals')
   console.log(intervals)
+  console.log('====================================')
+
   //usunac oistatni indeks ostatniego
   return intervals.reverse()
 }
 
+export const templateGenerator = () => {
+  const keys = Object.keys(TIMELINE)
+  const lastKey = keys[keys.length - 1]
+  const TOTAL_TIME = Number(lastKey)
+  console.log(TOTAL_TIME)
+  let keyframeTemplate = '@keyframes rotate { '
+  keyframeTemplate += `0% {
+    transform: rotateX(0deg);
+    }`
+  let prevDistance = 0
+  for (const [time, distance] of Object.entries(TIMELINE)) {
+    keyframeTemplate += ` ${100 / (TOTAL_TIME / time)}% { transform: rotateX(${(distance + prevDistance) * -360}deg); }`
+    prevDistance += distance
+  }
+
+  keyframeTemplate += '} '
+  keyframeTemplate += `.animated-box { animation: rotate ${TOTAL_TIME / 1000}s linear; animation-fill-mode: forwards; }`
+  console.log('keyframeTemplate')
+  console.log(keyframeTemplate)
+  return keyframeTemplate
+}
+
 generateTimeOuts()
+// templateGenerator()
+// const xArray = [1, 2, 3, 4, 5]
+
+// const timelineFunc = (x) => {
+//   const y = ((0.1 * (x - 0.9) * (x - 1)) / 2) * 5
+//   console.log(y)
+// }
+// xArray.forEach((el) => {
+//   timelineFunc(el)
+// })
