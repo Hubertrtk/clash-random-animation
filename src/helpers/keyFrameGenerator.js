@@ -1,67 +1,8 @@
-const FRAMES = [
-  { frame: 3000, rotate: 2 }, // do 1000ms wykonaj 5 obrotow- (hardcoded dla 10 sekund animacji !!!)
-  { frame: 5000, rotate: 1 },
-  { frame: 10000, rotate: 1 },
-]
-
-const ROTATE = 360
-
-// generator()
-
-let faces = {
-  face1: [],
-  face2: [],
-  face3: [],
-  face4: [],
-  face5: [],
-  face6: [],
-}
-
-const facesTimeoutGenerator = () => {
-  let prevjump = 0
-  FRAMES.forEach((el, indexFrame) => {
-    let arr = Array.from({ length: el.rotate })
-    let fullRotateTime
-    if (indexFrame == 0) {
-      fullRotateTime = el.frame / el.rotate
-    } else {
-      fullRotateTime = (el.frame - FRAMES[indexFrame - 1].frame) / el.rotate
-    }
-    const oneStepTime = fullRotateTime / 6
-    arr.forEach((el, index) => {
-      if (index == 0) {
-        arr[index] = oneStepTime * 3 + prevjump
-      } else {
-        arr[index] = fullRotateTime
-      }
-    })
-    faces.face1.push(...arr)
-    faces.face2.push(...arr)
-    faces.face3.push(...arr)
-    faces.face4.push(...arr)
-    faces.face5.push(...arr)
-    faces.face6.push(...arr)
-    if (indexFrame == 0) {
-      console.log('fullRotateTime')
-      console.log(fullRotateTime)
-      faces.face1[0] = oneStepTime * 2
-      faces.face2[0] = oneStepTime * 3
-      faces.face3[0] = oneStepTime * 4
-      faces.face4[0] = fullRotateTime - oneStepTime
-      faces.face5[0] = fullRotateTime
-      faces.face6[0] = fullRotateTime + oneStepTime
-    }
-    prevjump = oneStepTime * 3
-  })
-  // faces.face6[0]
-  console.log(faces)
-}
-
 // facesTimeoutGenerator()
 
 /// uciac ostatni element sciany 6
 
-const ILOSC_SCIAN_FIGURY = 6
+const ILOSC_SCIAN_FIGURY = 4
 
 export const generateBlockStyles = () => {
   let faces = {}
@@ -85,47 +26,147 @@ export const generateBlockStyles = () => {
   return { template, faces, wallAmmount: ILOSC_SCIAN_FIGURY }
 }
 
+// tzyma info ile zrobilo dystansu  od poprzedniej
 const TIMELINE = {
-  [10000]: 1,
+  [1000]: 1, //1
+  [3000]: 1, //2
+  [5000]: 3, //5 jakie jest to laczny dystans
+  [10000]: 1, //6
 }
-// expected: [500 500 500 500]
-// obliczamy tak jakby sciana juz wykonala pierwszy update (jhest z tylu)
-export const generateTimeOuts = () => {
-  let face1 = []
-  let prevTime = 0
-  let prevDistance = 0
-  for (const [time, distance] of Object.entries(TIMELINE)) {
-    if (distance > 1) {
-      const speedPerOneRotate = (time - prevTime) / distance
-      let arr = Array.from({ length: distance })
-      arr.forEach((el, i) => {
-        arr[i] = speedPerOneRotate
-      })
-      face1.push(...arr)
-    } else {
-      const updateTime = time - prevTime
-      face1.push(updateTime)
-    }
-    prevTime = time
+
+const ANIMATION_TIME = 20 * 1000 //ms
+const JUMP = 200 //ms
+
+let TIMELINE_JUMP = []
+for (let i = 0; i <= ANIMATION_TIME; i += JUMP) {
+  TIMELINE_JUMP.push(i)
+}
+
+/**
+ * klucz - os czasu (ms)
+ * wartosc - predkosc utzymywana do tego czasu ( deg/1000ms ) od poprzedniego klucza
+ */
+const SPEED_TIMELINE = {
+  [0]: 0,
+  [1000]: 360,
+  [2000]: 720,
+  [3000]: 360,
+  [20000]: 360,
+}
+
+const expampleDistance = [180, 360, 1080, 1440]
+
+function calculateTimeToDistance(speedTimeline, distances) {
+  // Zamiana speedTimeline na posortowaną tablicę par [czas, prędkość]
+  const timeline = Object.entries(speedTimeline)
+    .map(([time, speed]) => [parseInt(time, 10), speed])
+    .sort((a, b) => a[0] - b[0])
+
+  // Funkcja pomocnicza do obliczania dystansu na danym odcinku czasu
+  function calculateSegmentDistance(speed, timeDelta) {
+    return (speed / 1000) * timeDelta // speed w deg/1000ms i timeDelta w ms
   }
-  console.log(face1)
 
-  const FIRST_DELAY = face1[0]
-  // obliczanie opznienia przyt pierwszym update
-  const onePartTime = FIRST_DELAY / ILOSC_SCIAN_FIGURY
-  let intervals = Array.from({ length: ILOSC_SCIAN_FIGURY })
-  intervals.forEach((el, index) => {
-    intervals[index] = [...face1]
-    intervals[index][0] -= onePartTime * index - onePartTime * 2
+  const results = {}
+
+  distances.forEach((targetDistance) => {
+    let accumulatedDistance = 0
+    let lastTime = 0
+    let lastSpeed = 0
+
+    for (let i = 0; i < timeline.length; i++) {
+      const [currentTime, currentSpeed] = timeline[i]
+      const timeDelta = currentTime - lastTime
+
+      // Oblicz dystans dla bieżącego segmentu
+      const segmentDistance = calculateSegmentDistance(lastSpeed, timeDelta)
+
+      if (accumulatedDistance + segmentDistance >= targetDistance) {
+        // Oblicz dokładny czas osiągnięcia celu
+        const remainingDistance = targetDistance - accumulatedDistance
+        const timeToTarget = remainingDistance / (lastSpeed / 1000)
+        results[targetDistance] = lastTime + timeToTarget - 1000
+        break
+      }
+
+      accumulatedDistance += segmentDistance
+      lastTime = currentTime
+      lastSpeed = currentSpeed
+    }
+
+    // Jeśli dystans nie został osiągnięty w czasie SPEED_TIMELINE
+    if (!results[targetDistance]) {
+      results[targetDistance] = null // null oznacza, że dystans jest nieosiągalny
+    }
   })
-  console.log('====================================')
-  console.log('intervals')
-  console.log(intervals)
-  console.log('====================================')
 
-  //usunac oistatni indeks ostatniego
-  return intervals.reverse()
+  return results
 }
+
+/**
+ * Oblicza dystans osiągnięty dla podanych jednostek czasu.
+ * @param {Object} speedTimeline - Obiekt reprezentujący zmiany prędkości w czasie (ms).
+ * @param {number[]} times - Tablica jednostek czasu (ms).
+ * @returns {Object} - Obiekt, gdzie klucz to czas (ms), a wartość to dystans (deg).
+ */
+function calculateDistanceAtTimes(speedTimeline, times) {
+  times.forEach((el, index) => {
+    times[index] += 1000
+  })
+  // Zamiana speedTimeline na posortowaną tablicę par [czas, prędkość]
+  const timeline = Object.entries(speedTimeline)
+    .map(([time, speed]) => [parseInt(time, 10), speed])
+    .sort((a, b) => a[0] - b[0])
+
+  // Funkcja pomocnicza do obliczania dystansu na danym odcinku czasu
+  function calculateSegmentDistance(speed, timeDelta) {
+    return (speed / 1000) * timeDelta // speed w deg/1000ms i timeDelta w ms
+  }
+
+  const results = {}
+  times.forEach((time) => {
+    let accumulatedDistance = 0
+    let lastTime = 0
+    let lastSpeed = 0
+
+    for (let i = 0; i < timeline.length; i++) {
+      const [currentTime, currentSpeed] = timeline[i]
+
+      if (time <= currentTime) {
+        const timeDelta = time - lastTime
+        accumulatedDistance += calculateSegmentDistance(lastSpeed, timeDelta)
+        // console.log(time)
+        results[time - 1000] = accumulatedDistance
+        break
+      }
+
+      const timeDelta = currentTime - lastTime
+      accumulatedDistance += calculateSegmentDistance(lastSpeed, timeDelta)
+      lastTime = currentTime
+      lastSpeed = currentSpeed
+    }
+
+    // Jeśli czas przekracza SPEED_TIMELINE, zwracamy maksymalny dystans
+    if (!results[time - 1000]) {
+      console.log(time - 1000)
+      results[time - 1000] = accumulatedDistance
+    }
+  })
+
+  return results
+}
+
+const obiektCzasDoDystans = calculateDistanceAtTimes(SPEED_TIMELINE, [...TIMELINE_JUMP])
+let dystansce = []
+for (const [, dystans] of Object.entries(obiektCzasDoDystans)) {
+  dystansce.push(dystans)
+}
+const obiektDystansDoCzas = calculateTimeToDistance(SPEED_TIMELINE, dystansce)
+// console.log(obiektCzasDoDystans)
+// console.log(obiektDystansDoCzas)
+
+// obliczamy tak jakby sciana juz wykonala pierwszy update (jhest z tylu)
+export const generateTimeOuts = () => {}
 
 export const templateGenerator = () => {
   const keys = Object.keys(TIMELINE)
@@ -137,9 +178,10 @@ export const templateGenerator = () => {
     transform: rotateX(0deg);
     }`
   let prevDistance = 0
-  for (const [time, distance] of Object.entries(TIMELINE)) {
-    keyframeTemplate += ` ${100 / (TOTAL_TIME / time)}% { transform: rotateX(${(distance + prevDistance) * -360}deg); }`
-    prevDistance += distance
+  for (const [time, angel] of Object.entries(
+    calculateTimeToDistance(SPEED_TIMELINE, TIMELINE_JUMP),
+  )) {
+    keyframeTemplate += `${ANIMATION_TIME / time}% { transform: rotateX(${angel}deg); }`
   }
 
   keyframeTemplate += '} '
@@ -149,14 +191,4 @@ export const templateGenerator = () => {
   return keyframeTemplate
 }
 
-generateTimeOuts()
 // templateGenerator()
-// const xArray = [1, 2, 3, 4, 5]
-
-// const timelineFunc = (x) => {
-//   const y = ((0.1 * (x - 0.9) * (x - 1)) / 2) * 5
-//   console.log(y)
-// }
-// xArray.forEach((el) => {
-//   timelineFunc(el)
-// })
