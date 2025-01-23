@@ -4,60 +4,51 @@
  * @param {number[]} times - Tablica zawierająca jednostki czasu (ms).
  * @returns {number[]} - Tablica dystansów dla podanych jednostek czasu.
  */
-export function calculateDistances(speedTimeline, times) {
-  const result = {}
-  let currentDistance = 0
-  let wczesniejszaPredkosc = 0
-  let czasDoNasteopnegoMaxa = 0
-  let wczesniejszCzas = 0
-  times.forEach((time) => {
-    let { min, max } = znajdzPrzedzial(speedTimeline, time)
-    console.log(time)
-    console.log({ min, max })
-    if (speedTimeline[max] == 0) {
-      console.log('max dla ' + max)
+export function calculateDistance(speedTimeline, time) {
+  let distance = 0
+  const speedTimelineArray = Object.entries(speedTimeline)
+  let timeDone = 0
+  for (let i = 0; i < speedTimelineArray.length; i++) {
+    const [timeLine, speed] = speedTimelineArray[i]
+    let [prevTimeLine, prevSpeed] = [0, 0]
+    if (i > 0) {
+      ;[prevTimeLine, prevSpeed] = speedTimelineArray[i - 1]
     }
-    const predkosc = speedTimeline[max]
-    if (czasDoNasteopnegoMaxa && wczesniejszaPredkosc !== predkosc) {
-      console.log('problem dla', time)
-      let zaleglaOdleglosc = czasDoNasteopnegoMaxa * wczesniejszaPredkosc
-      let res = (time - min) * predkosc
-      result[time] = zaleglaOdleglosc + currentDistance + res
-    } else {
-      result[time] = predkosc * (time - wczesniejszCzas) + currentDistance
+    if (time >= timeLine) {
+      distance += (timeLine - prevTimeLine) * speed
+      timeDone += timeLine
     }
-    currentDistance = result[time]
-    wczesniejszaPredkosc = predkosc
-    wczesniejszCzas = time
-    czasDoNasteopnegoMaxa = max - time
-    // console.log(time, ' czasDoNasteopnegoMaxa ', czasDoNasteopnegoMaxa)
-  })
-  for (const key in result) {
-    result[key] = result[key] / 1000
+    if (time < timeLine) {
+      distance += (time - prevTimeLine) * speed
+      break
+    }
   }
-  return result
+  return distance / 1000
 }
 
-// bierze gorny gdy ttf jest taki jak timeKeys
-const znajdzPrzedzial = (SPEED_TIMELINE, timeToFind) => {
-  if (timeToFind == 0) {
-    return 0
-  }
-  let min = null
-  let max = null
-  const timeKeys = Object.keys(SPEED_TIMELINE)
-    .map(Number)
-    .sort((a, b) => a - b)
-  timeKeys.forEach((el, index) => {
-    if (el <= timeToFind && timeToFind <= timeKeys[index + 1]) {
-      if (el == timeToFind) {
-        min = timeKeys[index - 1]
-        max = timeKeys[index]
-        return
-      }
-      min = el
-      max = timeKeys[index + 1]
-    }
+// const SPEED_TIMELINE = {
+//   1000: 720,
+//   2000: 360,
+//   3000: 360,
+//   4000: 0,
+// }
+
+export const calculateDistances = (speedTimeline, times) => {
+  return times.map((time) => {
+    return { [time]: calculateDistance(speedTimeline, time) }
   })
-  return { min, max }
 }
+
+// console.log(calculateDistance(SPEED_TIMELINE, 1000)) //720
+// console.log(calculateDistance(SPEED_TIMELINE, 1500)) //900
+// console.log(calculateDistance(SPEED_TIMELINE, 2000)) //1080
+// console.log(calculateDistance(SPEED_TIMELINE, 2500)) // 1260
+// console.log(calculateDistance(SPEED_TIMELINE, 3000)) //1440
+// console.log(calculateDistance(SPEED_TIMELINE, 3500)) //1440
+// console.log(calculateDistance(SPEED_TIMELINE, 500)) //360
+// console.log(calculateDistance(SPEED_TIMELINE, 100)) //72
+// console.log(calculateDistance(SPEED_TIMELINE, 50)) //36
+// console.log(calculateDistance(SPEED_TIMELINE, 1)) //0.72
+// console.log(calculateDistance(SPEED_TIMELINE, 3001)) //1440
+// console.log(calculateDistance(SPEED_TIMELINE, 4000)) //1440
+// console.log(calculateDistances(SPEED_TIMELINE, [500, 1500, 2500, 3500, 4000]))

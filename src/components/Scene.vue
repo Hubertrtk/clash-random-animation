@@ -15,11 +15,7 @@
 </template>
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import {
-  generateBlockStyles,
-  generateTimeOuts,
-  templateGenerator,
-} from '../helpers/keyFrameGenerator'
+import { generateBlockStyles, templateGenerator } from '../helpers/keyFrameGenerator'
 
 const facesDisplayData = reactive({})
 
@@ -33,7 +29,7 @@ onMounted(() => {
     facesDisplayData[face] = { data: i++, updateOnClick: value.updateOnClick }
     console.log('i')
     console.log(i)
-    runTimeout(generateTimeOuts()[i - 2], facesDisplayData[face])
+    // runTimeout(generateTimeOuts()[i - 2], facesDisplayData[face])
   }
   startAnimation()
 })
@@ -54,7 +50,7 @@ const runTimeout = (array, face, currentIndex = 0) => {
 const startAnimation = () => {
   // Tworzenie dynamicznej definicji keyframes
   const style = document.createElement('style')
-  style.innerHTML = templateGenerator()
+  style.innerHTML = templateGenerator().keyframeTemplate
   document.head.appendChild(style)
 }
 </script>
