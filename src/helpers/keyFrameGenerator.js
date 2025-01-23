@@ -1,5 +1,7 @@
 // facesTimeoutGenerator()
 
+import { calculateDistances } from './calculateDistances.js'
+
 /// uciac ostatni element sciany 6
 
 const ILOSC_SCIAN_FIGURY = 4
@@ -47,14 +49,12 @@ for (let i = 0; i <= ANIMATION_TIME; i += JUMP) {
  * wartosc - predkosc utzymywana do tego czasu ( deg/1000ms ) od poprzedniego klucza
  */
 const SPEED_TIMELINE = {
-  [0]: 0,
-  [1000]: 360,
-  [2000]: 720,
-  [3000]: 360,
-  [20000]: 360,
+  0: 0,
+  1000: 360,
+  2000: 360,
+  3000: 360,
+  4000: 0,
 }
-
-const expampleDistance = [180, 360, 1080, 1440]
 
 function calculateTimeToDistance(speedTimeline, distances) {
   // Zamiana speedTimeline na posortowaną tablicę par [czas, prędkość]
@@ -96,74 +96,21 @@ function calculateTimeToDistance(speedTimeline, distances) {
 
     // Jeśli dystans nie został osiągnięty w czasie SPEED_TIMELINE
     if (!results[targetDistance]) {
-      results[targetDistance] = null // null oznacza, że dystans jest nieosiągalny
+      results[targetDistance] = targetDistance // null oznacza, że dystans jest nieosiągalny
     }
   })
 
   return results
 }
 
-/**
- * Oblicza dystans osiągnięty dla podanych jednostek czasu.
- * @param {Object} speedTimeline - Obiekt reprezentujący zmiany prędkości w czasie (ms).
- * @param {number[]} times - Tablica jednostek czasu (ms).
- * @returns {Object} - Obiekt, gdzie klucz to czas (ms), a wartość to dystans (deg).
- */
-function calculateDistanceAtTimes(speedTimeline, times) {
-  times.forEach((el, index) => {
-    times[index] += 1000
-  })
-  // Zamiana speedTimeline na posortowaną tablicę par [czas, prędkość]
-  const timeline = Object.entries(speedTimeline)
-    .map(([time, speed]) => [parseInt(time, 10), speed])
-    .sort((a, b) => a[0] - b[0])
-
-  // Funkcja pomocnicza do obliczania dystansu na danym odcinku czasu
-  function calculateSegmentDistance(speed, timeDelta) {
-    return (speed / 1000) * timeDelta // speed w deg/1000ms i timeDelta w ms
-  }
-
-  const results = {}
-  times.forEach((time) => {
-    let accumulatedDistance = 0
-    let lastTime = 0
-    let lastSpeed = 0
-
-    for (let i = 0; i < timeline.length; i++) {
-      const [currentTime, currentSpeed] = timeline[i]
-
-      if (time <= currentTime) {
-        const timeDelta = time - lastTime
-        accumulatedDistance += calculateSegmentDistance(lastSpeed, timeDelta)
-        // console.log(time)
-        results[time - 1000] = accumulatedDistance
-        break
-      }
-
-      const timeDelta = currentTime - lastTime
-      accumulatedDistance += calculateSegmentDistance(lastSpeed, timeDelta)
-      lastTime = currentTime
-      lastSpeed = currentSpeed
-    }
-
-    // Jeśli czas przekracza SPEED_TIMELINE, zwracamy maksymalny dystans
-    if (!results[time - 1000]) {
-      console.log(time - 1000)
-      results[time - 1000] = accumulatedDistance
-    }
-  })
-
-  return results
-}
-
-const obiektCzasDoDystans = calculateDistanceAtTimes(SPEED_TIMELINE, [...TIMELINE_JUMP])
+const obiektCzasDoDystans = calculateDistances(SPEED_TIMELINE, [500, 1500, 2500, 3500, 4000])
 let dystansce = []
 for (const [, dystans] of Object.entries(obiektCzasDoDystans)) {
   dystansce.push(dystans)
 }
-const obiektDystansDoCzas = calculateTimeToDistance(SPEED_TIMELINE, dystansce)
-// console.log(obiektCzasDoDystans)
-// console.log(obiektDystansDoCzas)
+const obiektDystansDoCzas = calculateTimeToDistance(SPEED_TIMELINE, [360, 720, 1080, 1440])
+console.log('obiektDystansDoCzas')
+console.log(obiektDystansDoCzas)
 
 // obliczamy tak jakby sciana juz wykonala pierwszy update (jhest z tylu)
 export const generateTimeOuts = () => {}
