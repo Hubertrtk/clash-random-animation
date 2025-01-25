@@ -1,8 +1,8 @@
 //---- PARAMS:
 
 const tTotal = 10000 // całkowiuty czas symulacji (ms)
-const tStep = 200 // krok czasowy(ms)
-const vMax = 12 // maksymalna prędkość (obr/s)
+const tStep = 500 // krok czasowy(ms)
+const vMax = 3 // maksymalna prędkość (obr/s)
 
 //--------------
 // computed:

@@ -5,7 +5,7 @@ import { calculateTime } from './calculateTime.js'
 
 /// uciac ostatni element sciany 6
 
-const ILOSC_SCIAN_FIGURY = 6
+const ILOSC_SCIAN_FIGURY = 10
 
 export const generateBlockStyles = () => {
   let faces = {}
@@ -39,11 +39,49 @@ export const generateBlockStyles = () => {
  * wartosc - predkosc utzymywana do tego czasu ( deg/1000ms ) od poprzedniego klucza
  */
 const SPEED_TIMELINE = {
-  5000: 180,
-  10000: 180,
+  500: 1,
+  1000: 5,
+  1500: 12,
+  2000: 22,
+  2500: 34,
+  3000: 49,
+  3500: 66,
+  4000: 86,
+  4500: 109,
+  5000: 135,
+  5500: 163,
+  6000: 194,
+  6500: 228,
+  7000: 265,
+  7500: 304,
+  8000: 346,
+  8500: 390,
+  9000: 437,
+  9500: 487,
+  10000: 540,
+  10500: 541,
+  11000: 488,
+  11500: 438,
+  12000: 391,
+  12500: 347,
+  13000: 305,
+  13500: 266,
+  14000: 229,
+  14500: 195,
+  15000: 164,
+  15500: 136,
+  16000: 110,
+  16500: 87,
+  17000: 67,
+  17500: 50,
+  18000: 35,
+  18500: 23,
+  19000: 13,
+  19500: 6,
+  20000: 2,
 }
 
-const ANIMATION_TIME = 10 * 1000 //ms
+const ANIMATION_TIME = 20 * 1000 //ms
 const JUMP = 500 // ms
 
 console.log('calculateTime(SPEED_TIMELINE, 360)')
@@ -72,10 +110,26 @@ export const templateGenerator = () => {
   return { keyframeTemplate, finishAngel: rotatePerTime[rotatePerTime.length - 1][1] }
 }
 
+function reorderArray(arrays, firstElement) {
+  // Find the index of the subarray where the first element is equal to firstElement
+  const targetIndex = arrays.findIndex((subarray) => subarray[0] === firstElement)
+
+  if (targetIndex === -1) {
+    // If no such subarray is found, return the original array
+    return arrays
+  }
+
+  // Split the array into two parts: before and after the target index
+  const beforeTarget = arrays.slice(0, targetIndex)
+  const afterTarget = arrays.slice(targetIndex)
+
+  // Concatenate the two parts, starting with the target index
+  return afterTarget.concat(beforeTarget)
+}
+
 export const facesTimeoutGenerator = () => {
   const finishAngel = templateGenerator().finishAngel
-  console.log('finishAngel ' + finishAngel)
-  const faces = []
+  let faces = []
   const faceAngel = 360 / ILOSC_SCIAN_FIGURY
   for (let i = 1; i <= ILOSC_SCIAN_FIGURY; i++) {
     let updateAngels = []
@@ -83,18 +137,42 @@ export const facesTimeoutGenerator = () => {
     for (let i = startAngel; i <= finishAngel; i += 360) {
       updateAngels.push(i)
     }
-    let intervals = []
-    updateAngels.forEach((angel) => {
-      intervals.push(angel)
-      // const interval = calculateTime(SPEED_TIMELINE, angel)
-      // if (interval !== undefined) {
-      //   intervals.push(interval)
-      // }
-    })
-    faces.push(intervals)
+    faces.push(updateAngels)
   }
+  faces = reorderArray(faces, 180)
+  faces.forEach((intervalsArray, index) => {
+    faces[index] = intervalsArray.map((interval) => {
+      return calculateTime(SPEED_TIMELINE, interval) || 0
+    })
+  })
+  faces = faces.map((array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      array[i] = array[i] - array[i - 1]
+    }
+    return array
+  })
+
+  /// !!!!!!!!!!!!!!!!!!!!!!!
+  // usuwamy pierwsze elementy z ostatnich 3 indeksow TODO nie powinno updatowac scian z tylu
+  for (let i = ILOSC_SCIAN_FIGURY / 2; i < ILOSC_SCIAN_FIGURY; i++) {
+    if (faces[i].length > 1) {
+      console.log('usuwam dla ' + faces[i])
+      const firstIndex = faces[i].shift()
+      // console.log(firstIndex)
+      faces[i][0] += firstIndex
+      console.log(faces[i][0])
+      console.log('=========')
+    }
+  }
+
   return faces
 }
 
-// console.log(facesTimeoutGenerator())
+console.log('timeouts:')
+console.log(facesTimeoutGenerator())
+console.log('==============================')
+console.log('templateGenerator().keyframeTemplate')
 console.log(templateGenerator().keyframeTemplate)
+console.log('==============================')
+console.log('generateBlockStyles().faces')
+console.log(generateBlockStyles().faces)
