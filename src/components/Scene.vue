@@ -6,7 +6,10 @@
         :class="value.face"
         v-for="value in facesDisplayData"
         :key="value.face"
-        :style="{ transform: value.transformStyles }"
+        :style="{
+          transform: value.transformStyles,
+          background: `hsl(${facesDisplayData[value.face]?.data}, ${facesDisplayData[value.face]?.data * 0.5}%, 58%)`,
+        }"
       >
         {{ facesDisplayData[value.face]?.data }}
       </div>
@@ -19,63 +22,75 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 const facesDisplayData = reactive({
   face1: {
     rotateX: 0,
-    updateOnClick: 2.5,
+    updateOnClick: 3,
     face: 'face1',
     transformStyles: 'rotateX(0deg) translateZ(200px)',
   },
   face2: {
-    rotateX: 36,
-    updateOnClick: 3.5,
+    rotateX: 30,
+    updateOnClick: 4,
     face: 'face2',
-    transformStyles: 'rotateX(36deg) translateZ(200px)',
+    transformStyles: 'rotateX(30deg) translateZ(200px)',
   },
   face3: {
-    rotateX: 72,
-    updateOnClick: 4.5,
+    rotateX: 60,
+    updateOnClick: 5,
     face: 'face3',
-    transformStyles: 'rotateX(72deg) translateZ(200px)',
+    transformStyles: 'rotateX(60deg) translateZ(200px)',
   },
   face4: {
-    rotateX: 108,
-    updateOnClick: 5.5,
+    rotateX: 90,
+    updateOnClick: 6,
     face: 'face4',
-    transformStyles: 'rotateX(108deg) translateZ(200px)',
+    transformStyles: 'rotateX(90deg) translateZ(200px)',
   },
   face5: {
-    rotateX: 144,
-    updateOnClick: 6.5,
+    rotateX: 120,
+    updateOnClick: 7,
     face: 'face5',
-    transformStyles: 'rotateX(144deg) translateZ(200px)',
+    transformStyles: 'rotateX(120deg) translateZ(200px)',
   },
   face6: {
-    rotateX: 180,
-    updateOnClick: 7.5,
+    rotateX: 150,
+    updateOnClick: 8,
     face: 'face6',
-    transformStyles: 'rotateX(180deg) translateZ(200px)',
+    transformStyles: 'rotateX(150deg) translateZ(200px)',
   },
   face7: {
-    rotateX: 216,
-    updateOnClick: 8.5,
+    rotateX: 180,
+    updateOnClick: 9,
     face: 'face7',
-    transformStyles: 'rotateX(216deg) translateZ(200px)',
+    transformStyles: 'rotateX(180deg) translateZ(200px)',
   },
   face8: {
-    rotateX: 252,
-    updateOnClick: 9.5,
+    rotateX: 210,
+    updateOnClick: 10,
     face: 'face8',
-    transformStyles: 'rotateX(252deg) translateZ(200px)',
+    transformStyles: 'rotateX(210deg) translateZ(200px)',
   },
   face9: {
-    rotateX: 288,
-    updateOnClick: 0.5,
+    rotateX: 240,
+    updateOnClick: 11,
     face: 'face9',
-    transformStyles: 'rotateX(288deg) translateZ(200px)',
+    transformStyles: 'rotateX(240deg) translateZ(200px)',
   },
   face10: {
-    rotateX: 324,
-    updateOnClick: 1.5,
+    rotateX: 270,
+    updateOnClick: 0,
     face: 'face10',
-    transformStyles: 'rotateX(324deg) translateZ(200px)',
+    transformStyles: 'rotateX(270deg) translateZ(200px)',
+  },
+  face11: {
+    rotateX: 300,
+    updateOnClick: 1,
+    face: 'face11',
+    transformStyles: 'rotateX(300deg) translateZ(200px)',
+  },
+  face12: {
+    rotateX: 330,
+    updateOnClick: 2,
+    face: 'face12',
+    transformStyles: 'rotateX(330deg) translateZ(200px)',
   },
 })
 
@@ -91,15 +106,17 @@ onMounted(() => {
   }
   let intervals = [
     [4390, 2058, 1236, 944, 777, 676, 692, 804, 992, 1349, 2525],
-    [4678, 1913, 1197, 922, 769, 668, 700, 822, 1018, 1401, 2875],
-    [4945, 1782, 1165, 900, 756, 666, 707, 840, 1044, 1467, 3471],
-    [5175, 1688, 1133, 879, 739, 667, 713, 859, 1070, 1534],
-    [5396, 1603, 1090, 868, 724, 666, 729, 870, 1101, 1621],
+    [4634, 1934, 1203, 925, 771, 669, 699, 819, 1014, 1389, 2817],
+    [4856, 1826, 1175, 908, 760, 667, 704, 835, 1035, 1445, 3219],
+    [5065, 1730, 1149, 889, 748, 666, 710, 850, 1057, 1501, 4027],
+    [5249, 1659, 1119, 875, 735, 666, 718, 863, 1079, 1559],
+    [5433, 1586, 1085, 867, 721, 666, 732, 871, 1109, 1635],
     [5598, 1519, 1064, 854, 713, 666, 744, 884, 1141, 1705],
-    [5784, 1452, 1038, 835, 705, 666, 760, 906, 1172, 1811],
-    [5970, 1384, 1012, 817, 698, 671, 770, 928, 1204, 1940],
-    [6132, 1341, 985, 799, 691, 677, 780, 949, 1249, 2093],
-    [6290, 1290, 965, 786, 683, 685, 788, 970, 1303, 2269],
+    [5753, 1463, 1042, 839, 706, 666, 758, 902, 1167, 1789],
+    [5908, 1407, 1020, 824, 700, 668, 768, 920, 1193, 1898],
+    [6053, 1360, 999, 808, 694, 675, 775, 938, 1223, 2007],
+    [6185, 1326, 978, 793, 688, 680, 782, 956, 1268, 2149],
+    [6316, 1281, 962, 784, 682, 687, 788, 975, 1312, 2311],
   ]
   intervals.forEach((intervalArray, index) => {
     runTimeout(intervalArray, facesDisplayData[`face${index + 1}`])
@@ -114,7 +131,7 @@ const runTimeout = (array, face, currentIndex = 0) => {
   setTimeout(() => {
     currentIndex += 1
     //update
-    face.data += 10
+    face.data += 12
     //============
     runTimeout(array, face, currentIndex)
   }, array[currentIndex])
@@ -204,24 +221,24 @@ const startAnimation = () => {
     }97.5% {
     transform: rotateX(-3882deg);
     }100% {
-    transform: rotateX(-3883deg);
+    transform: rotateX(-3900deg);
     }} .animated-box { animation: rotate 20s linear; animation-fill-mode: forwards; }`
   document.head.appendChild(style)
 }
 </script>
 <style scoped>
 .scene {
-  width: 250px;
+  width: 350px;
   height: 200px;
   position: relative;
   perspective: 800px;
-  border: 2px solid orange;
+  /* border: 2px solid orange; */
 }
 
 .cube {
   position: absolute;
   transform-style: preserve-3d;
-  border: 2px solid red;
+  border: 2px solid rgb(91, 49, 241);
   width: 100%;
   height: 100%;
 }
@@ -235,14 +252,15 @@ const startAnimation = () => {
   right: 0;
   bottom: calc(50% - 60px / 2);
 
-  background: rgba(255, 255, 255, 0.8);
+  /* background: hsl(221, 27%, 58%); */
   /* border-top: 1px solid rgb(49, 104, 221); */
-  border: 1px solid red;
+  border: 1px solid hsl(234, 100%, 18%);
   display: flex;
   justify-content: center;
   align-items: center;
-  /* backface-visibility: hidden; */
+  backface-visibility: hidden;
   /* Ukrycie tylnej strony */
   letter-spacing: 10px;
+  border-radius: 5px;
 }
 </style>

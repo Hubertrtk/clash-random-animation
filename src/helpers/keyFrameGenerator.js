@@ -1,11 +1,11 @@
 // facesTimeoutGenerator()
 
-import { calculateDistance, calculateDistances } from './calculateDistances.js'
+import { calculateDistance } from './calculateDistances.js'
 import { calculateTime } from './calculateTime.js'
 
 /// uciac ostatni element sciany 6
 
-const ILOSC_SCIAN_FIGURY = 10
+const ILOSC_SCIAN_FIGURY = 12
 
 export const generateBlockStyles = () => {
   let faces = {}
@@ -22,17 +22,8 @@ export const generateBlockStyles = () => {
     value.face = face
     value.transformStyles = `rotateX(${value.rotateX}deg) translateZ(200px)`
   }
-  let template = ''
-  for (const [, value] of Object.entries(faces)) {
-    template += value.cssTemplate
-  }
-  return { template, faces, wallAmmount: ILOSC_SCIAN_FIGURY }
+  return faces
 }
-
-// let TIMELINE_JUMP = []
-// for (let i = 0; i <= ANIMATION_TIME; i += JUMP) {
-//   TIMELINE_JUMP.push(i)
-// }
 
 /**
  * klucz - os czasu (ms)
@@ -81,11 +72,8 @@ const SPEED_TIMELINE = {
   20000: 2,
 }
 
-const ANIMATION_TIME = 20 * 1000 //ms
+const ANIMATION_TIME = Object.keys(SPEED_TIMELINE)[Object.keys(SPEED_TIMELINE).length - 1] // dlugosc animacji w ms
 const JUMP = 500 // ms
-
-console.log('calculateTime(SPEED_TIMELINE, 360)')
-console.log(calculateTime(SPEED_TIMELINE, 360))
 
 export const templateGenerator = () => {
   /**
@@ -100,14 +88,24 @@ export const templateGenerator = () => {
   keyframeTemplate += `0% {
     transform: rotateX(0deg);
     }`
-  rotatePerTime.forEach(([time, angel]) => {
+  let lastAngel
+  rotatePerTime.forEach(([time, angel], index) => {
+    let newAngel = angel
+    if (index === rotatePerTime.length - 1) {
+      // console.log('angel')
+      // console.log(angel)
+      // newAngel += 360 / ILOSC_SCIAN_FIGURY - (newAngel % (360 / ILOSC_SCIAN_FIGURY))
+      lastAngel = newAngel
+      // console.log('lastAngel')
+      // console.log(lastAngel)
+    }
     keyframeTemplate += `${time}% {
-    transform: rotateX(-${angel}deg);
+    transform: rotateX(-${newAngel}deg);
     }`
   })
   keyframeTemplate += '} '
   keyframeTemplate += `.animated-box { animation: rotate ${ANIMATION_TIME / 1000}s linear; animation-fill-mode: forwards; }`
-  return { keyframeTemplate, finishAngel: rotatePerTime[rotatePerTime.length - 1][1] }
+  return { keyframeTemplate, finishAngel: lastAngel }
 }
 
 function reorderArray(arrays, firstElement) {
@@ -156,23 +154,18 @@ export const facesTimeoutGenerator = () => {
   // usuwamy pierwsze elementy z ostatnich 3 indeksow TODO nie powinno updatowac scian z tylu
   for (let i = ILOSC_SCIAN_FIGURY / 2; i < ILOSC_SCIAN_FIGURY; i++) {
     if (faces[i].length > 1) {
-      console.log('usuwam dla ' + faces[i])
       const firstIndex = faces[i].shift()
       // console.log(firstIndex)
       faces[i][0] += firstIndex
-      console.log(faces[i][0])
-      console.log('=========')
     }
   }
 
   return faces
 }
 
-console.log('timeouts:')
-console.log(facesTimeoutGenerator())
-console.log('==============================')
-console.log('templateGenerator().keyframeTemplate')
-console.log(templateGenerator().keyframeTemplate)
-console.log('==============================')
-console.log('generateBlockStyles().faces')
-console.log(generateBlockStyles().faces)
+console.log('INTERVALS: ', facesTimeoutGenerator())
+console.log('====================================')
+console.log('face styles: ', generateBlockStyles())
+console.log('====================================')
+console.log('face styles: ', templateGenerator().keyframeTemplate)
+console.log('====================================')

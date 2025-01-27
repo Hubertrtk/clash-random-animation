@@ -26,29 +26,8 @@ export function calculateDistance(speedTimeline, time) {
   return distance / 1000
 }
 
-// const SPEED_TIMELINE = {
-//   1000: 720,
-//   2000: 360,
-//   3000: 360,
-//   4000: 0,
-// }
-
 export const calculateDistances = (speedTimeline, times) => {
   return times.map((time) => {
     return { [time]: calculateDistance(speedTimeline, time) }
   })
 }
-
-// console.log(calculateDistance(SPEED_TIMELINE, 1000)) //720
-// console.log(calculateDistance(SPEED_TIMELINE, 1500)) //900
-// console.log(calculateDistance(SPEED_TIMELINE, 2000)) //1080
-// console.log(calculateDistance(SPEED_TIMELINE, 2500)) // 1260
-// console.log(calculateDistance(SPEED_TIMELINE, 3000)) //1440
-// console.log(calculateDistance(SPEED_TIMELINE, 3500)) //1440
-// console.log(calculateDistance(SPEED_TIMELINE, 500)) //360
-// console.log(calculateDistance(SPEED_TIMELINE, 100)) //72
-// console.log(calculateDistance(SPEED_TIMELINE, 50)) //36
-// console.log(calculateDistance(SPEED_TIMELINE, 1)) //0.72
-// console.log(calculateDistance(SPEED_TIMELINE, 3001)) //1440
-// console.log(calculateDistance(SPEED_TIMELINE, 4000)) //1440
-// console.log(calculateDistances(SPEED_TIMELINE, [500, 1500, 2500, 3500, 4000]))
