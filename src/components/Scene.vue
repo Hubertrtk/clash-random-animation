@@ -8,10 +8,11 @@
         :key="value.face"
         :style="{
           transform: value.transformStyles,
-          background: `hsl(${facesDisplayData[value.face]?.data}, ${facesDisplayData[value.face]?.data * 0.5}%, 58%)`,
+          background: `hsl(60, 100%, 37.5%)`,
         }"
       >
-        {{ facesDisplayData[value.face]?.data }}
+        <!-- {{ facesDisplayData[value.face]?.data }} -->
+        <p>pi_3NP0r4L1BagIMffx0duBh7dc</p>
       </div>
     </div>
   </div>
@@ -228,7 +229,7 @@ const startAnimation = () => {
 </script>
 <style scoped>
 .scene {
-  width: 350px;
+  width: 520px;
   height: 200px;
   position: relative;
   perspective: 800px;
@@ -254,7 +255,7 @@ const startAnimation = () => {
 
   /* background: hsl(221, 27%, 58%); */
   /* border-top: 1px solid rgb(49, 104, 221); */
-  border: 1px solid hsl(234, 100%, 18%);
+  border: 1px solid hsl(0, 0%, 0%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -262,5 +263,9 @@ const startAnimation = () => {
   /* Ukrycie tylnej strony */
   letter-spacing: 10px;
   border-radius: 5px;
+  color: #fff;
+  color: black;
+  letter-spacing: 4px;
+  font-weight: 600;
 }
 </style>

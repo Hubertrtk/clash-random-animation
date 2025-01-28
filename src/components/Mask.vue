@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="wrapper">
-      <div class="line"></div>
+      <!-- <div class="line"></div> -->
       <div class="glass"></div>
     </div>
   </div>
