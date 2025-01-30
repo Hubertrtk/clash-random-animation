@@ -8,11 +8,10 @@
         :key="value.face"
         :style="{
           transform: value.transformStyles,
-          background: `hsl(60, 100%, 37.5%)`,
+          // background: `hsl(60, 100%, 37.5%)`,
         }"
       >
-        <!-- {{ facesDisplayData[value.face]?.data }} -->
-        <p>pi_3NP0r4L1BagIMffx0duBh7dc</p>
+        {{ props.displayData[facesDisplayData[value.face]?.data] }}
       </div>
     </div>
   </div>
@@ -96,7 +95,7 @@ const facesDisplayData = reactive({
 })
 
 const props = defineProps({
-  rotate: Number,
+  displayData: Number,
 })
 
 onMounted(() => {
@@ -229,43 +228,96 @@ const startAnimation = () => {
 </script>
 <style scoped>
 .scene {
-  width: 520px;
-  height: 200px;
+  width: 720px;
+  /* dodane */
+  width: 900px;
+  height: 500px;
   position: relative;
   perspective: 800px;
-  /* border: 2px solid orange; */
+  /* border: 2px solid rgba(177, 42, 255, 0.952); */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 100%;
+    top: 40%;
+    height: 100px;
+    width: 500px;
+    border: 2px solid white;
+    z-index: -1;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    right: 100%;
+    top: 40%;
+    height: 100px;
+    width: 500px;
+    border: 2px solid white;
+    z-index: -1;
+  }
+  /* overflow: hidden; */
 }
 
 .cube {
   position: absolute;
   transform-style: preserve-3d;
-  border: 2px solid rgb(91, 49, 241);
   width: 100%;
+  /* dodane */
+  width: 720px;
   height: 100%;
+  /* border: 2px solid red; */
+  left: 90px;
 }
 
 .face {
   position: absolute;
-  /* width: 400px;
-   */
-  height: 60px;
+  height: 100px;
   left: 0;
   right: 0;
-  bottom: calc(50% - 60px / 2);
+  bottom: calc(50% - 52px);
 
   /* background: hsl(221, 27%, 58%); */
   /* border-top: 1px solid rgb(49, 104, 221); */
-  border: 1px solid hsl(0, 0%, 0%);
+  border: 2px solid white;
+  /* border: 2px solid #ff3b30; */
   display: flex;
   justify-content: center;
   align-items: center;
   backface-visibility: hidden;
   /* Ukrycie tylnej strony */
+  text-align: center;
   letter-spacing: 10px;
-  border-radius: 5px;
+
   color: #fff;
+  color: #4b0082;
   color: black;
+
   letter-spacing: 4px;
-  font-weight: 600;
+  font-weight: 750;
+  font-family: 'Saira', serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: 'wdth' 111.2;
+  font-size: 19px;
+
+  background: rgb(255, 255, 178);
+  background: radial-gradient(circle, rgba(255, 255, 178, 1) 0%, rgba(255, 254, 0, 1) 100%);
+
+  z-index: 10;
+  background: linear-gradient(45deg, #ffec5f, #ffc700);
+  box-shadow: 0 4px 15px rgba(255, 200, 0, 0.6);
+  border: 2px solid #ffcc00;
+  border-radius: 10px;
+
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(255, 255, 0, 1);
+  }
 }
 </style>

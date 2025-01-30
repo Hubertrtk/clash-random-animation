@@ -1,26 +1,24 @@
-<template>
-  <Mask />
-  <div class="scene-container">
-    <Scene :rotate="rotateValue" />
-  </div>
-</template>
 <script setup>
-import { reactive, ref } from 'vue'
-import Scene from './components/Scene.vue'
-import Mask from './components/Mask.vue'
+import { ref, computed } from 'vue'
+import AdminPage from './pages/Admin.vue'
+import LoteryPage from './pages/lotery.vue'
 
-const rotateValue = ref(0)
-</script>
-<style scoped>
-.scene-container {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: black;
+const routes = {
+  '/lotery': LoteryPage,
+  '/admin': AdminPage,
 }
-</style>
+
+const currentPath = ref(window.location.hash)
+
+window.addEventListener('hashchange', () => {
+  currentPath.value = window.location.hash
+})
+
+const currentView = computed(() => {
+  return routes[currentPath.value.slice(1) || '/']
+})
+</script>
+
+<template>
+  <component :is="currentView" />
+</template>
