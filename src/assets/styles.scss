@@ -1,5 +1,5 @@
 // Liczba świetlików (powinna być taka sama w PUG)
-$quantity: 15;
+$quantity: 100;
 
 html,
 body {
@@ -49,6 +49,42 @@ body {
       flash ease-in-out infinite;
   }
 }
+.firefly-fast {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 0.4vw;
+  height: 0.4vw;
+  margin: -0.2vw 0 0 9.8vw;
+  animation: ease-in-out 10s alternate infinite;
+  pointer-events: none;
+  // z-index: 100;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform-origin: -10vw;
+  }
+
+  &::before {
+    background: black;
+    opacity: 0.4;
+    animation: drift ease-in-out alternate infinite;
+  }
+
+  &::after {
+    background: white;
+    opacity: 0;
+    box-shadow: 0 0 0vw 0vw yellow;
+    animation:
+      drift ease-in-out alternate infinite,
+      flash ease-in-out infinite;
+  }
+}
 
 // Losowa animacja dla każdego świetlika
 @for $i from 1 through $quantity {
@@ -58,6 +94,19 @@ body {
   $flashDelay: (random(8) + 0.5) * 1000ms;
 
   .firefly:nth-child(#{$i}) {
+    animation-name: move#{$i};
+
+    &::before {
+      animation-duration: $rotationSpeed;
+    }
+
+    &::after {
+      animation-duration: $rotationSpeed, $flashDuration;
+      animation-delay: 0ms, $flashDelay;
+    }
+  }
+
+  .firefly-fast:nth-child(#{$i}) {
     animation-name: move#{$i};
 
     &::before {
