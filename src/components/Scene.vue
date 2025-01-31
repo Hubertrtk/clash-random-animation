@@ -241,9 +241,12 @@ const startAnimation = () => {
     left: 100%;
     top: 40%;
     height: 100px;
-    width: 500px;
-    border: 2px solid white;
-    z-index: -1;
+    width: 140px;
+    border: 5px solid #ffcc00;
+    z-index: -12;
+    background: white;
+    border-left: none;
+    border-radius: 20px;
   }
   &::before {
     content: '';
@@ -251,9 +254,12 @@ const startAnimation = () => {
     right: 100%;
     top: 40%;
     height: 100px;
-    width: 500px;
-    border: 2px solid white;
-    z-index: -1;
+    width: 140px;
+    border: 5px solid #ffcc00;
+    border-right: none;
+    background: white;
+    z-index: -12;
+    border-radius: 20px;
   }
   /* overflow: hidden; */
 }

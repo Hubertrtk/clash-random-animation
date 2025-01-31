@@ -1,13 +1,17 @@
 <template>
-  <Mask />
+  <Background />
   <div class="scene-container">
     <Scene v-if="startAnimation" :displayData="displayData" />
+  </div>
+  <div class="mask-container">
+    <Mask />
   </div>
 </template>
 <script setup>
 import { onMounted, ref } from 'vue'
 import Scene from '../components/Scene.vue'
-import Mask from '../components/Mask.vue'
+import Background from '../components/Background.vue'
+import Mask from '@/components/Mask.vue'
 
 const displayData = ref([])
 const startAnimation = ref(false)
@@ -34,6 +38,16 @@ window.addEventListener('storage', (event) => {
   right: 0;
   bottom: 0;
   z-index: 10;
-  /* background-color: black; */
+}
+.mask-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
 }
 </style>
