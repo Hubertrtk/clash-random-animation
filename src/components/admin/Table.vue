@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-table">
     <TableTools @filter="handleFilter" :selectOptions="props.headers" />
     <Pagination @pagination="handleRangeChange" />
     <table>
@@ -78,7 +78,7 @@ const csvData = computed(() => {
 * {
   box-sizing: border-box;
 }
-.container {
+.container-table {
   /* background-color: black; */
   margin-top: 50px;
 }

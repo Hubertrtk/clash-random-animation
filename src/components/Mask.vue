@@ -1,7 +1,15 @@
+<script setup lang="ts">
+import ArrowLeft from './ArrowLeft.vue'
+import ArrowRight from './ArrowRight.vue'
+</script>
+
 <template>
   <div class="mask-wrpper">
     <div class="first-border"></div>
-    <div class="secend-border"></div>
+    <div class="secend-border">
+      <ArrowLeft />
+      <ArrowRight />
+    </div>
     <div class="third-border"></div>
   </div>
 </template>
@@ -13,10 +21,13 @@
   backdrop-filter: blur(2px);
 }
 .secend-border {
-  width: 100%;
+  width: 103%;
   height: 33%;
   border: 2px solid #ffcc00;
   border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .third-border {
   width: 100%;

@@ -1,0 +1,17 @@
+@for $i from 0 through 4 {
+  .round:nth-child(#{$i}) {
+    animation-name: changeColor;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-delay: $i * 0.2s;
+  }
+}
+
+@keyframes changeColor {
+  0% {
+    background-color: aquamarine;
+  }
+  100% {
+    background-color: rgb(89, 0, 255);
+  }
+}

@@ -1,7 +1,7 @@
 <template>
-  <Background />
+  <Background :startAnimation="startAnimation" />
   <div class="scene-container">
-    <!-- <Scene v-if="startAnimation" :displayData="displayData" /> -->
+    <Scene v-if="startAnimation" :displayData="displayData" />
   </div>
   <div class="mask-container">
     <Mask />

@@ -1,5 +1,7 @@
 import './assets/main.css'
-import './assets/styles.scss'
+import './assets/firefly-fast.scss'
+import './assets/firefly.scss'
+import './assets/arrow.scss'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'

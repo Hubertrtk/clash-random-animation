@@ -8,7 +8,6 @@
         :key="value.face"
         :style="{
           transform: value.transformStyles,
-          // background: `hsl(60, 100%, 37.5%)`,
         }"
       >
         {{ props.displayData[facesDisplayData[value.face]?.data] }}
@@ -235,7 +234,7 @@ const startAnimation = () => {
   position: relative;
   perspective: 800px;
   /* border: 2px solid rgba(177, 42, 255, 0.952); */
-  &::after {
+  /* &::after {
     content: '';
     position: absolute;
     left: 100%;
@@ -260,7 +259,7 @@ const startAnimation = () => {
     background: white;
     z-index: -12;
     border-radius: 20px;
-  }
+  } */
   /* overflow: hidden; */
 }
 
@@ -317,6 +316,11 @@ const startAnimation = () => {
 
   animation: pulse 1.5s infinite;
 }
+
+.face11 {
+  animation: winnerFace 1.5s infinite;
+  animation-delay: 18s;
+}
 @keyframes pulse {
   0%,
   100% {
@@ -324,6 +328,16 @@ const startAnimation = () => {
   }
   50% {
     box-shadow: 0 0 20px rgba(255, 255, 0, 1);
+  }
+}
+@keyframes winnerFace {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+  }
+  50% {
+    box-shadow: 0 0 20px rgb(93, 14, 146);
+    border-color: rgb(93, 14, 146);
   }
 }
 </style>
