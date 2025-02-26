@@ -4,7 +4,7 @@ import AdminPage from './pages/Admin.vue'
 import LoteryPage from './pages/lotery.vue'
 
 const routes = {
-  '/lotery': LoteryPage,
+  '/lottery': LoteryPage,
   '/admin': AdminPage,
 }
 

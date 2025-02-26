@@ -25,6 +25,7 @@ window.addEventListener('storage', (event) => {
     displayData.value = JSON.parse(localStorage.getItem('key'))
     startAnimation.value = true
   }
+  console.log(displayData.value)
 })
 </script>
 <style scoped>

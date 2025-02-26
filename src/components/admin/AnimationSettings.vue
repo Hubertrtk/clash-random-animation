@@ -15,7 +15,7 @@
   </div>
 </template>
 <script setup>
-import { maskPhoneNumber } from '@/helpers/maskPhoneNumber'
+import { formName, maskPhoneNumber, trimOrderPrefix } from '@/helpers/maskPhoneNumber'
 import { onMounted, ref } from 'vue'
 
 const props = defineProps({
@@ -27,7 +27,7 @@ const props = defineProps({
 const winnerData = ref([])
 
 const handleStrtButton = () => {
-  startAnimation()
+  // startAnimation()
   drawWinner()
 }
 
@@ -36,12 +36,20 @@ const drawWinner = () => {
   const wylosowaneIndeksy = losowanie(totalParticipantsIndexArray, [], 134)
   //131 winner
   const wybraneElementy = wylosowaneIndeksy.map((index) => props.csvData[index])
-  console.log(wybraneElementy)
-  winnerData.value = wybraneElementy[wybraneElementy.length - 1]
+  winnerData.value = wybraneElementy[wybraneElementy.length - 3]
   const displayData = wybraneElementy.map((item) => {
-    return `${item[props.columns.indexOf('order_id')]} - ${item[props.columns.indexOf('first_name')]} - ${maskPhoneNumber(item[props.columns.indexOf('phone_number')])}`
+    return {
+      orderId: trimOrderPrefix(item[props.columns.indexOf('orderId')]),
+      name: formName(
+        item[props.columns.indexOf('firstname')],
+        item[props.columns.indexOf('lastname')],
+      ),
+      phone: maskPhoneNumber(
+        item[props.columns.indexOf('mobileNumber')],
+        item[props.columns.indexOf('mobileCode')],
+      ),
+    }
   })
-  // displayData[131] = 'Hubert Rutkowski'
   startAnimation(displayData)
 }
 

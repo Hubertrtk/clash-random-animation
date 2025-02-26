@@ -1,6 +1,6 @@
 <template>
   <div class="scene">
-    <div class="cube animated-box">
+    <div class="cube animated-box animated-box-end" @animationend="handleAnimationEnd">
       <div
         class="face"
         :class="value.face"
@@ -8,15 +8,37 @@
         :key="value.face"
         :style="{
           transform: value.transformStyles,
+          ...(isHide ? hideStyles : {}),
+          ...(isHide && value.face == 'face11' ? winnerStyles : {}),
         }"
       >
-        {{ props.displayData[facesDisplayData[value.face]?.data] }}
+        <p :style="isHide && value.face != 'face11' ? hideStyles : {}" class="orderId">
+          {{ props.displayData[facesDisplayData[value.face]?.data]?.orderId }}
+        </p>
+        <p :style="isHide && value.face != 'face11' ? hideStyles : {}" class="name">
+          {{ props.displayData[facesDisplayData[value.face]?.data]?.name }}
+        </p>
+        <p :style="isHide && value.face != 'face11' ? hideStyles : {}" class="surname">
+          {{ props.displayData[facesDisplayData[value.face]?.data]?.phone }}
+        </p>
       </div>
     </div>
   </div>
 </template>
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+
+const isHide = ref(false)
+
+const hideStyles = computed(() => ({
+  color: '#ffff0057',
+  background: 'black',
+  border: 'none !important',
+}))
+
+const winnerStyles = computed(() => ({
+  animation: 'none !important',
+}))
 
 const facesDisplayData = reactive({
   face1: {
@@ -123,6 +145,10 @@ onMounted(() => {
   startAnimation()
 })
 
+const handleAnimationEnd = () => {
+  isHide.value = true
+}
+
 const runTimeout = (array, face, currentIndex = 0) => {
   if (currentIndex == array.length) {
     return
@@ -139,89 +165,132 @@ const runTimeout = (array, face, currentIndex = 0) => {
 const startAnimation = () => {
   // Tworzenie dynamicznej definicji keyframes
   const style = document.createElement('style')
-  style.innerHTML = `@keyframes rotate { 0% {
-    transform: rotateX(0deg);
-    }2.5% {
-    transform: rotateX(-0.5deg);
-    }5% {
-    transform: rotateX(-3deg);
-    }7.5% {
-    transform: rotateX(-9deg);
-    }10% {
-    transform: rotateX(-20deg);
-    }12.5% {
-    transform: rotateX(-37deg);
-    }15% {
-    transform: rotateX(-61.5deg);
-    }17.5% {
-    transform: rotateX(-94.5deg);
-    }20% {
-    transform: rotateX(-137.5deg);
-    }22.5% {
-    transform: rotateX(-192deg);
-    }25% {
-    transform: rotateX(-259.5deg);
-    }27.500000000000004% {
-    transform: rotateX(-341deg);
-    }30% {
-    transform: rotateX(-438deg);
-    }32.5% {
-    transform: rotateX(-552deg);
-    }35% {
-    transform: rotateX(-684.5deg);
-    }37.5% {
-    transform: rotateX(-836.5deg);
-    }40% {
-    transform: rotateX(-1009.5deg);
-    }42.5% {
-    transform: rotateX(-1204.5deg);
-    }45% {
-    transform: rotateX(-1423deg);
-    }47.5% {
-    transform: rotateX(-1666.5deg);
-    }50% {
-    transform: rotateX(-1936.5deg);
-    }52.5% {
-    transform: rotateX(-2207deg);
-    }55.00000000000001% {
-    transform: rotateX(-2451deg);
-    }57.49999999999999% {
-    transform: rotateX(-2670deg);
-    }60% {
-    transform: rotateX(-2865.5deg);
-    }62.5% {
-    transform: rotateX(-3039deg);
-    }65% {
-    transform: rotateX(-3191.5deg);
-    }67.5% {
-    transform: rotateX(-3324.5deg);
-    }70% {
-    transform: rotateX(-3439deg);
-    }72.5% {
-    transform: rotateX(-3536.5deg);
-    }75% {
-    transform: rotateX(-3618.5deg);
-    }77.5% {
-    transform: rotateX(-3686.5deg);
-    }80% {
-    transform: rotateX(-3741.5deg);
-    }82.5% {
-    transform: rotateX(-3785deg);
-    }85% {
-    transform: rotateX(-3818.5deg);
-    }87.5% {
-    transform: rotateX(-3843.5deg);
-    }90% {
-    transform: rotateX(-3861deg);
-    }92.5% {
-    transform: rotateX(-3872.5deg);
-    }95% {
-    transform: rotateX(-3879deg);
-    }97.5% {
-    transform: rotateX(-3882deg);
-    }100% {
-    transform: rotateX(-3900deg);
-    }} .animated-box { animation: rotate 20s linear; animation-fill-mode: forwards; }`
+  style.innerHTML = `@keyframes rotate {
+    0% {
+        transform: rotateX(-16deg);
+    }
+    2.5% {
+        transform: rotateX(-16.5deg);
+    }
+    5% {
+        transform: rotateX(-19deg);
+    }
+    7.5% {
+        transform: rotateX(-25deg);
+    }
+    10% {
+        transform: rotateX(-36deg);
+    }
+    12.5% {
+        transform: rotateX(-53deg);
+    }
+    15% {
+        transform: rotateX(-77.5deg);
+    }
+    17.5% {
+        transform: rotateX(-110.5deg);
+    }
+    20% {
+        transform: rotateX(-153.5deg);
+    }
+    22.5% {
+        transform: rotateX(-208deg);
+    }
+    25% {
+        transform: rotateX(-275.5deg);
+    }
+    27.5% {
+        transform: rotateX(-357deg);
+    }
+    30% {
+        transform: rotateX(-454deg);
+    }
+    32.5% {
+        transform: rotateX(-568deg);
+    }
+    35% {
+        transform: rotateX(-700.5deg);
+    }
+    37.5% {
+        transform: rotateX(-852.5deg);
+    }
+    40% {
+        transform: rotateX(-1025.5deg);
+    }
+    42.5% {
+        transform: rotateX(-1220.5deg);
+    }
+    45% {
+        transform: rotateX(-1439deg);
+    }
+    47.5% {
+        transform: rotateX(-1682.5deg);
+    }
+    50% {
+        transform: rotateX(-1952.5deg);
+    }
+    52.5% {
+        transform: rotateX(-2223deg);
+    }
+    55% {
+        transform: rotateX(-2467deg);
+    }
+    57.5% {
+        transform: rotateX(-2686deg);
+    }
+    60% {
+        transform: rotateX(-2881.5deg);
+    }
+    62.5% {
+        transform: rotateX(-3055deg);
+    }
+    65% {
+        transform: rotateX(-3207.5deg);
+    }
+    67.5% {
+        transform: rotateX(-3340.5deg);
+    }
+    70% {
+        transform: rotateX(-3455deg);
+    }
+    72.5% {
+        transform: rotateX(-3552.5deg);
+    }
+    75% {
+        transform: rotateX(-3634.5deg);
+    }
+    77.5% {
+        transform: rotateX(-3702.5deg);
+    }
+    80% {
+        transform: rotateX(-3757.5deg);
+    }
+    82.5% {
+        transform: rotateX(-3801deg);
+    }
+    85% {
+        transform: rotateX(-3834.5deg);
+    }
+    87.5% {
+        transform: rotateX(-3859.5deg);
+    }
+    90% {
+        transform: rotateX(-3877deg);
+    }
+    92.5% {
+        transform: rotateX(-3888.5deg);
+    }
+    95% {
+        transform: rotateX(-3895deg);
+    }
+    97.5% {
+        transform: rotateX(-3898deg);
+    }
+    100% {
+        transform: rotateX(-3900deg);
+    }
+}
+ .animated-box { animation: rotate 20s linear; animation-fill-mode: forwards; }`
   document.head.appendChild(style)
 }
 </script>
@@ -281,20 +350,13 @@ const startAnimation = () => {
   right: 0;
   bottom: calc(50% - 52px);
 
-  /* background: hsl(221, 27%, 58%); */
-  /* border-top: 1px solid rgb(49, 104, 221); */
-  border: 2px solid white;
-  /* border: 2px solid #ff3b30; */
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
   backface-visibility: hidden;
-  /* Ukrycie tylnej strony */
-  text-align: center;
   letter-spacing: 10px;
-
-  color: #fff;
-  color: #4b0082;
   color: black;
 
   letter-spacing: 4px;
@@ -305,22 +367,60 @@ const startAnimation = () => {
   font-variation-settings: 'wdth' 111.2;
   font-size: 19px;
 
-  background: rgb(255, 255, 178);
-  background: radial-gradient(circle, rgba(255, 255, 178, 1) 0%, rgba(255, 254, 0, 1) 100%);
-
   z-index: 10;
-  background: linear-gradient(45deg, #ffec5f, #ffc700);
-  box-shadow: 0 4px 15px rgba(255, 200, 0, 0.6);
-  border: 2px solid #ffcc00;
   border-radius: 10px;
 
   animation: pulse 1.5s infinite;
+  background: black;
+
+  p {
+    height: 10px;
+    transition: all 3.5s;
+    box-sizing: border-box;
+    /* border: 2px solid red; */
+    height: 50%;
+    margin: 0;
+    display: flex;
+    z-index: 110;
+  }
+
+  .orderId {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fffe00;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    line-height: 20px;
+    font-size: 17px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fffe00;
+
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+  }
+  .surname {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fffe00;
+
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+  }
 }
 
-.face11 {
+/* .face11 {
   animation: winnerFace 1.5s infinite;
   animation-delay: 18s;
-}
+} */
+
 @keyframes pulse {
   0%,
   100% {

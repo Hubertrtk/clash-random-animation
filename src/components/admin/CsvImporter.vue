@@ -29,8 +29,8 @@ const handleFileUpload = (event) => {
 const processCsv = (content) => {
   const rows = content.split('\n').map((row) => row.trim())
   if (rows.length > 0) {
-    headers.value = rows[0].split(',')
-    csvData.value = rows.slice(1).map((row) => row.split(','))
+    headers.value = rows[0].split(';')
+    csvData.value = rows.slice(1).map((row) => row.split(';'))
   }
   emit('importCsv', { headers: headers.value, csvData: csvData.value })
 }

@@ -23,11 +23,13 @@ import ArrowRight from './ArrowRight.vue'
 .secend-border {
   width: 103%;
   height: 33%;
-  border: 2px solid #ffcc00;
+  border: 2px solid #fffe00;
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: black;
+  z-index: -1;
 }
 .third-border {
   width: 100%;

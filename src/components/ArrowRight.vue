@@ -1,42 +1,42 @@
 <template>
   <button class="buttonr">
-    <div class="line oner">
+    <div class="line one">
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
     </div>
-    <div class="line twor">
+    <div class="line two">
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
     </div>
-    <div class="line threer">
+    <div class="line three">
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
     </div>
-    <div class="line fourr">
+    <div class="line four">
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
     </div>
-    <div class="line fiver">
+    <div class="line five">
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
     </div>
-    <div class="line sixr">
+    <div class="line six">
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
     </div>
-    <div class="line sevenr">
+    <div class="line seven">
       <div class="round"></div>
       <div class="round"></div>
       <div class="round"></div>
@@ -53,25 +53,8 @@
   flex-direction: column;
   width: 70px;
   gap: 4px;
-  margin-right: -15px;
-}
-
-.button:hover {
-  animation: move 2s infinite ease;
-}
-
-@keyframes move {
-  0% {
-    transform: translateX(0);
-  }
-
-  50% {
-    transform: translateX(20px);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
+  transform: rotate(180deg);
+  margin-right: 2px;
 }
 
 .round {
@@ -86,23 +69,23 @@
   gap: 4px;
 }
 
-.twor {
-  transform: translateX(-10px);
+.two {
+  transform: translateX(10px);
 }
 
-.threer {
-  transform: translateX(-20px);
+.three {
+  transform: translateX(20px);
 }
 
-.fourr {
-  transform: translateX(-30px);
+.four {
+  transform: translateX(30px);
 }
 
-.fiver {
-  transform: translateX(-20px);
+.five {
+  transform: translateX(20px);
 }
 
-.sixr {
-  transform: translateX(-10px);
+.six {
+  transform: translateX(10px);
 }
 </style>
