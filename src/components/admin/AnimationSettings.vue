@@ -1,11 +1,8 @@
 <template>
   <div class="settings-container">
     <div>Chose display column:</div>
-    <!-- <select @change="handleChange" v-model="selected">
-      <option disabled value="">Please select one</option>
-      <option v-for="item in props.columns" :key="item">{{ item }}</option>
-    </select> -->
     <button @click="handleStrtButton" class="start-button">START</button>
+    <button @click="handleDeleteWinner" class="start-button">DELETE WINNER</button>
     <ul class="winner-list">
       <li v-for="item in props.columns" :key="item">
         <p class="description-column">{{ item }}</p>
@@ -17,18 +14,27 @@
 <script setup>
 import { formName, maskPhoneNumber, trimOrderPrefix } from '@/helpers/maskPhoneNumber'
 import { onMounted, ref } from 'vue'
+const winnerData = ref([])
+
+onMounted(() => {
+  const storedWinnerData = JSON.parse(localStorage.getItem('winnerData'))
+  if (storedWinnerData) {
+    winnerData.value = storedWinnerData // Zaktualizuj winnerData
+  }
+})
 
 const props = defineProps({
   columns: Array,
   csvData: Array,
 })
 
-// const selected = ref('')
-const winnerData = ref([])
-
 const handleStrtButton = () => {
-  // startAnimation()
   drawWinner()
+}
+
+const handleDeleteWinner = () => {
+  localStorage.removeItem('winnerData')
+  winnerData.value = []
 }
 
 const drawWinner = () => {
@@ -50,6 +56,7 @@ const drawWinner = () => {
       ),
     }
   })
+  localStorage.setItem('winnerData', JSON.stringify(winnerData.value))
   startAnimation(displayData)
 }
 
@@ -76,6 +83,7 @@ const startAnimation = (displayData) => {
   flex-direction: column;
 }
 .start-button {
+  margin: 10px 0;
 }
 .winner-list {
   display: flex;

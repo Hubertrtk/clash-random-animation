@@ -53,6 +53,8 @@
   flex-direction: column;
   width: 70px;
   gap: 4px;
+  position: absolute;
+  left: 0;
 }
 
 .round {

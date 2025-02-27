@@ -7,6 +7,11 @@ import ArrowRight from './ArrowRight.vue'
   <div class="mask-wrpper">
     <div class="first-border"></div>
     <div class="secend-border">
+      <!-- <div class="left-cover"></div>
+      <div class="right-cover"></div>
+      <div class="bottom-cover"></div>
+      <div class="top-cover"></div> -->
+
       <ArrowLeft />
       <ArrowRight />
     </div>
@@ -14,10 +19,52 @@ import ArrowRight from './ArrowRight.vue'
   </div>
 </template>
 <style lang="css">
+.left-cover .right-cover .bottom-cover .top-cover {
+  position: absolute;
+  z-index: 999;
+}
+.left-cover {
+  position: absolute;
+  background-color: rgb(0, 0, 0);
+
+  top: 0;
+  bottom: 0;
+  left: 5px;
+  width: 88px;
+  border-right: 2px solid rgba(250, 250, 250, 0.055);
+}
+.right-cover {
+  position: absolute;
+  background-color: rgb(0, 0, 0);
+
+  top: 0;
+  bottom: 0;
+  right: 5px;
+  width: 88px;
+  border-left: 2px solid rgba(250, 250, 250, 0.055);
+}
+.bottom-cover {
+  position: absolute;
+  background-color: rgb(0, 0, 0);
+
+  top: 0;
+  left: 5px;
+  right: 5px;
+  height: 20px;
+  border-bottom: 2px solid rgba(250, 250, 250, 0.055);
+}
+.top-cover {
+  position: absolute;
+  background-color: rgb(0, 0, 0);
+  bottom: 1px;
+  left: 5px;
+  right: 5px;
+  height: 20px;
+  border-top: 2px solid rgba(250, 250, 250, 0.055);
+}
 .first-border {
   width: 100%;
   height: 33%;
-  /* border: 2px solid red; */
   backdrop-filter: blur(2px);
 }
 .secend-border {
@@ -28,8 +75,9 @@ import ArrowRight from './ArrowRight.vue'
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: black;
+  /* background-color: black; */
   z-index: -1;
+  position: relative;
 }
 .third-border {
   width: 100%;

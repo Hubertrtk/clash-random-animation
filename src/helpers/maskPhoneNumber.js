@@ -1,13 +1,25 @@
-export function maskPhoneNumber(str, areaCode) {
-  return `+${areaCode}` + ' xxx xxx ' + str.slice(-3)
+export function maskPhoneNumber(phoneNumber, areaCode) {
+  if (!phoneNumber) return ''
+  return `+${areaCode}` + ' xxx xxx ' + phoneNumber.slice(-3)
 }
 
 export function formName(name, surname) {
-  return name + ' ' + surname[0] + '.'
+  let formedSurname = ''
+  if (!name) {
+    name = ''
+  }
+  if (!surname) {
+    surname = ' '
+  } else {
+    if (surname.length >= 1) {
+      formedSurname = surname[0] + '.'
+    }
+  }
+  return name + ' ' + formedSurname
 }
 
-export function trimOrderPrefix(inputString) {
-  const parts = inputString.split('.')
-  if (parts.length < 4) return '' // Jeśli mniej niż 3 kropki, zwróć pusty string
+export function trimOrderPrefix(orderId) {
+  const parts = orderId.split('.')
+  if (parts.length < 4) return ''
   return parts.slice(3).join('.')
 }

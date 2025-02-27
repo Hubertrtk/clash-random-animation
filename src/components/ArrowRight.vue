@@ -55,6 +55,8 @@
   gap: 4px;
   transform: rotate(180deg);
   margin-right: 2px;
+  position: absolute;
+  right: 0;
 }
 
 .round {

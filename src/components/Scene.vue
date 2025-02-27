@@ -302,34 +302,6 @@ const startAnimation = () => {
   height: 500px;
   position: relative;
   perspective: 800px;
-  /* border: 2px solid rgba(177, 42, 255, 0.952); */
-  /* &::after {
-    content: '';
-    position: absolute;
-    left: 100%;
-    top: 40%;
-    height: 100px;
-    width: 140px;
-    border: 5px solid #ffcc00;
-    z-index: -12;
-    background: white;
-    border-left: none;
-    border-radius: 20px;
-  }
-  &::before {
-    content: '';
-    position: absolute;
-    right: 100%;
-    top: 40%;
-    height: 100px;
-    width: 140px;
-    border: 5px solid #ffcc00;
-    border-right: none;
-    background: white;
-    z-index: -12;
-    border-radius: 20px;
-  } */
-  /* overflow: hidden; */
 }
 
 .cube {
@@ -404,6 +376,8 @@ const startAnimation = () => {
     justify-content: center;
     align-items: center;
     width: 50%;
+    overflow: hidden; /* Ukrywa nadmiarowy tekst */
+    /* text-overflow: ellipsis; */
   }
   .surname {
     font-size: 20px;
